@@ -116,6 +116,11 @@ body {
   width: 100%;
 }
 
+.post-close-btn:hover,
+.post-three-dot {
+  cursor: pointer;
+}
+
 .left-links,
 .contacts-online-list {
   list-style-type: none;
@@ -194,13 +199,28 @@ body {
   cursor: pointer;
 }
 
-.file-upload-inp {
+.text-blue {
+  color: blue !important;
+}
+
+.post-liked {
+  color: blue !important;
+}
+
+.file-upload-inp-image {
+  display: none;
+  transition: all 2s ease-in;
+}
+.file-upload-inp-video {
   display: none;
   transition: all 2s ease-in;
 }
 
-.file-upload-imp-show {
+.file-upload-inp-show {
   display: block;
+}
+.file-upload-inp-hide {
+  display: none;
 }
 
 .close-post-upload:hover {

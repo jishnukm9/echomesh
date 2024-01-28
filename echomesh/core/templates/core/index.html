@@ -240,9 +240,9 @@
           {% for post in posts %}
 
           <div class="middle-content-two mb-2">
-            <div class="middle-content-two rounded bg-white p-3">
+            <div class="middle-content-two-child rounded bg-white p-3">
               <div
-                class="d-flex justify-content-between align-items-center mb-2"
+                class="d-flex justify-content-between align-items-center mb-3"
               >
                 <div class="d-flex gap-2">
                   <div>
@@ -255,14 +255,14 @@
                   <div class="d-flex align-items-center justify-content-center">
                     <div>
                       <p class="m-0">{{user.first_name}} {{user.last_name}}</p>
-                      <p class="m-0 time">{{post.created_at}}</p>
+                      <p class="m-0 time">{{post.post.created_at}}</p>
                     </div>
                   </div>
                 </div>
 
                 <div class="d-flex gap-3">
                   <div>
-                    <i class="fa-solid fa-ellipsis fs-4"></i>
+                    <i class="fa-solid fa-ellipsis fs-4 post-three-dot"></i>
                   </div>
 
                   <div>
@@ -272,16 +272,16 @@
               </div>
 
               <div class="post-description">
-                <p class="post-description-font">{{post.text}}</p>
+                <p class="post-description-font">{{post.post.text}}</p>
               </div>
 
-              {% if post.post_type == 'Image' %}
+              {% if post.post.post_type == 'Image' %}
 
               <div class="post-image-container">
-                <img class="post-image" src="{{post.image}}" alt="" />
+                <img class="post-image" src="{{post.post.image}}" alt="" />
               </div>
 
-              {% elif post.post_type == 'Video' %}
+              {% elif post.post.post_type == 'Video' %}
 
               <div class="post-video-container">
                 <video
@@ -290,7 +290,7 @@
                   controls
                   data-poster="/path/to/poster.jpg"
                 >
-                  <source src="{{post.video}}" type="video/mp4" />
+                  <source src="{{post.post.video}}" type="video/mp4" />
 
                   <!-- Captions are optional -->
                   <track
@@ -306,20 +306,27 @@
 
               <div class="px-2 pt-3">
                 <div
-                  class="upload-btn d-flex justify-content-between align-items-center"
+                  class="like-comment-container d-flex justify-content-between align-items-center"
                 >
                   <div
                     class="like-count d-flex align-items-center gap-2 px-0 py-2 rounded"
                   >
-                    <i class="fa-solid fa-thumbs-up text-info"></i>
-                    <p class="align-items-center m-0">134 Likes</p>
+                    <i class="fa-solid fa-thumbs-up text-blue"></i>
+                    <p class="align-items-center likes-count m-0">
+                      <span class="like-count-integer"
+                        >{{post.like_count}}</span
+                      >
+                      Likes
+                    </p>
                   </div>
 
                   <div
                     class="comment-count d-flex align-items-center gap-2 px-0 py-2 rounded"
                   >
                     <i class="fa-solid fa-comment"></i>
-                    <p class="align-items-center m-0">13 Comments</p>
+                    <p class="align-items-center m-0">
+                      {{post.comment_count}} Comments
+                    </p>
                   </div>
                 </div>
               </div>
@@ -328,22 +335,35 @@
                 <div
                   class="upload-btn d-flex justify-content-between align-items-center"
                 >
+                  {% if post.current_user_liked == True %}
                   <a
-                    class="video-up text-decoration-none text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+                    data-post-id="{{post.post.id}}"
+                    data-user-id="{{user.id}}"
+                    class="video-up post-like-btn post-liked fw-bold text-decoration-none text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
                   >
                     <i class="fa-regular fa-thumbs-up"></i>
                     <p class="align-items-center m-0">Like</p>
                   </a>
+                  {% else %}
+                  <a
+                    data-post-id="{{post.post.id}}"
+                    data-user-id="{{user.id}}"
+                    class="video-up post-like-btn not-liked fw-bold text-decoration-none text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+                  >
+                    <i class="fa-regular fa-thumbs-up"></i>
+                    <p class="align-items-center m-0">Like</p>
+                  </a>
+                  {% endif %}
 
                   <a
-                    class="img-up text-decoration-none text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+                    class="img-up text-decoration-none fw-bold text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
                   >
                     <i class="fa-regular fa-comment"></i>
                     <p class="align-items-center m-0">Comment</p>
                   </a>
 
                   <a
-                    class="feeling-up text-decoration-none text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+                    class="feeling-up text-decoration-none fw-bold text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
                   >
                     <i class="fa-solid fa-share"></i>
                     <p class="align-items-center m-0">Share</p>
@@ -635,7 +655,7 @@
     </div>
 
     <div class="body-wrapper-two">
-      <div class="post-upload-container bg-white p-3 rounded shadow">
+      <div class="post-upload-container bg-white p-3 rounded shadow mt-3">
         <div
           class="post-upload-header d-flex justify-content-between align-items-center"
         >
@@ -657,47 +677,76 @@
             /><span>{{user.first_name}} {{user.last_name}}</span>
           </div>
         </div>
-        <div class="upload-form-continer">
-          <textarea
-            name=""
-            id=""
-            cols="30"
-            rows="10"
-            placeholder="What's on your mind Jishnu?"
-            class="form-control border ps-4"
-          ></textarea>
-        </div>
-        <div class="mt-2 file-upload-inp">
-          <input type="file" class="form-control" name="" id="" />
-        </div>
-        <div
-          class="d-flex justify-content-between align-items-center border rounded px-3 py-3 mt-2"
+        <form
+          action="{% url 'uploadpost' %}"
+          method="post"
+          enctype="multipart/form-data"
         >
-          <div><p class="m-0 p-0">Add to your post</p></div>
-          <div class="d-flex align-items-center justify-content-between gap-4">
-            <div class="upload-icon upload-icon-image">
-              <i class="fa-solid fa-image text-success"></i>
-            </div>
-            <div class="upload-icon upload-icon-video">
-              <i class="fa-solid fa-video text-success"></i>
-            </div>
-            <div class="upload-icon upload-icon-feeling">
-              <i class="fa-regular fa-face-smile text-warning"></i>
+          {% csrf_token %}
+          <div class="upload-form-continer">
+            <textarea
+              name="text"
+              id=""
+              cols="30"
+              rows="10"
+              placeholder="What's on your mind Jishnu?"
+              class="form-control border ps-4"
+            ></textarea>
+          </div>
+
+          <div class="mt-2 file-upload-inp-image">
+            <input
+              type="file"
+              class="form-control"
+              name="image"
+              id="imageInput"
+              accept="image/*"
+            />
+          </div>
+          <div class="mt-2 file-upload-inp-video">
+            <input
+              type="file"
+              class="form-control"
+              name="video"
+              id="videoInput"
+              accept="video/*"
+            />
+          </div>
+
+          <div
+            class="d-flex justify-content-between align-items-center border rounded px-3 py-3 mt-2"
+          >
+            <div><p class="m-0 p-0">Add to your post</p></div>
+            <div
+              class="d-flex align-items-center justify-content-between gap-4"
+            >
+              <div class="upload-icon upload-icon-image">
+                <i class="fa-solid fa-image text-success"></i>
+              </div>
+              <div class="upload-icon upload-icon-video">
+                <i class="fa-solid fa-video text-success"></i>
+              </div>
+              <div class="upload-icon upload-icon-feeling">
+                <i class="fa-regular fa-face-smile text-warning"></i>
+              </div>
             </div>
           </div>
-        </div>
 
-        <div class="mt-2 w-100">
-          <button class="btn btn-success w-100">Post</button>
-        </div>
+          <div class="mt-2 w-100">
+            <button class="btn btn-success w-100">Post</button>
+          </div>
+        </form>
       </div>
     </div>
+    <script>
+      let csrf_token = "{{csrf_token}}";
+    </script>
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/plyr.js' %}"></script>
 
     <script>
-      for (let index = 1; index < 5; index++) {
+      for (let index = 1; index < {{post_count}}; index++) {
         const player = new Plyr(`#player${index}`);
       }
     </script>

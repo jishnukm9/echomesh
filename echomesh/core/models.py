@@ -11,14 +11,14 @@ from django.contrib.auth.models import User
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="userprofile")
     college = models.CharField(max_length=200)
-    college_passed_year = models.IntegerField()  # Corrected spelling
+    college_passed_year = models.IntegerField() 
     highschool = models.CharField(max_length=200)
     highschool_passed_year = models.IntegerField()
     city = models.CharField(max_length=50)
     district = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
     country = models.CharField(max_length=50)
-    phone = models.CharField(max_length=15)  # Changed to CharField
+    phone = models.CharField(max_length=15)  
     SINGLE = 'Single'
     IN_A_RELATIONSHIP = 'In a relationship'
     MARRIED = 'Married'
@@ -86,7 +86,7 @@ class Post(models.Model):
     last_modified_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.user.first_name 
+        return str(self.id)
 
 
 class Like(models.Model):
@@ -94,6 +94,10 @@ class Like(models.Model):
     user=models.ForeignKey(User, on_delete=models.CASCADE,related_name="user_likes")
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['post', 'user']
+
 
 
 class Comment(models.Model):
@@ -110,6 +114,9 @@ class SubLike(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ['comment', 'user']
+
 class SubComments(models.Model):
     post=models.ForeignKey(Post, on_delete=models.CASCADE,related_name="post_commentcomments")
     user=models.ForeignKey(User, on_delete=models.CASCADE,related_name="user_commentcomments")
@@ -124,12 +131,18 @@ class Save(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified_at = models.DateTimeField(auto_now_add=True)
 
+    class Meta:
+        unique_together = ['post', 'user']
+
 
 class Share(models.Model):
     post=models.ForeignKey(Post, on_delete=models.CASCADE,related_name="post_shares")
     user=models.ForeignKey(User, on_delete=models.CASCADE,related_name="user_shares")
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ['post', 'user']
 
 
 
@@ -145,6 +158,9 @@ class Friendship(models.Model):
         (FRIENDS, 'Friends'),
     ]
     status=models.CharField(max_length=20,choices=STATUS_CHOICES,default=PENDING)
+
+    class Meta:
+        unique_together = ['sender', 'receiver']
 
     def __str__(self):
         return f"{self.sender} -> {self.receiver}"
