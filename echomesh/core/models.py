@@ -51,6 +51,7 @@ class UserProfile(models.Model):
     last_modified_at = models.DateTimeField(auto_now_add=True)
     dob=models.DateField()
     gender=models.CharField(max_length=10,choices=GENDER_CHOICES,default=MALE)
+    online=models.BooleanField(default=True)
     
 
     def __str__(self):

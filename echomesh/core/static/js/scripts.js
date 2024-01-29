@@ -42,6 +42,30 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// video/image/feeling upload form pop up
+document.addEventListener("DOMContentLoaded", function () {
+  const videoUploadPopBtn = document.querySelector(".video-upload-pop");
+  const imageUploadPopBtn = document.querySelector(".image-upload-pop");
+  const feelingUploadPopBtn = document.querySelector(".feeling-upload-pop");
+  const bodyWrapper = document.querySelector(".body-wrapper-two");
+  const fileInputImage = document.querySelector(".file-upload-inp-image");
+  const fileInputVideo = document.querySelector(".file-upload-inp-video");
+  videoUploadPopBtn.addEventListener("click", function (e) {
+    bodyWrapper.style.display = "block";
+    if (fileInputImage.classList.contains("file-upload-inp-show")) {
+      fileInputImage.classList.remove("file-upload-inp-show");
+    }
+    fileInputVideo.classList.toggle("file-upload-inp-show");
+  });
+  imageUploadPopBtn.addEventListener("click", function (e) {
+    bodyWrapper.style.display = "block";
+    if (fileInputVideo.classList.contains("file-upload-inp-show")) {
+      fileInputVideo.classList.remove("file-upload-inp-show");
+    }
+    fileInputImage.classList.toggle("file-upload-inp-show");
+  });
+});
+
 // opening file upload input on clicking image or video in post upload pop up
 document.addEventListener("DOMContentLoaded", function () {
   const imageBtn = document.querySelector(".upload-icon-image");

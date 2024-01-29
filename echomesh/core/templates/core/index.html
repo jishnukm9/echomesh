@@ -19,7 +19,7 @@
     <div
       class="d-flex bg-white fixed-top nav-shadow justify-content-between align-items-center px-3"
     >
-      <a href="#" class="navbar-brand fs-3"
+      <a href="{% url 'home' %}" class="navbar-brand fs-3 fw-bold"
         ><span class="logo-first-letter">E</span>choMesh<span
           class="logo-first-letter"
           >.</span
@@ -33,8 +33,12 @@
           <a href="" class="tab-active"
             ><i class="fa-solid fa-house-user"></i>
           </a>
-          <a href=""><i class="fa-solid fa-users"></i></a>
-          <a href=""><i class="fa-solid fa-user"></i></a>
+          <a href="{% url 'friends' id=user.id %}"
+            ><i class="fa-solid fa-users"></i
+          ></a>
+          <a href="{% url 'profile' id=user.id %}"
+            ><i class="fa-solid fa-user"></i
+          ></a>
         </div>
       </div>
 
@@ -45,7 +49,7 @@
           <li class="nav-item">
             <a
               href="#"
-              class="nav-link active p-3 rounded-circle d-flex align-items-center justify-content-center"
+              class="nav-link-custom active p-3 rounded-circle d-flex align-items-center justify-content-center"
             >
               <i class="fa-solid fa-message"></i>
             </a>
@@ -53,7 +57,7 @@
           <li class="nav-item">
             <a
               href="#about"
-              class="nav-link active p-3 rounded-circle d-flex align-items-center justify-content-center"
+              class="nav-link-custom active p-3 rounded-circle d-flex align-items-center justify-content-center"
             >
               <i class="fa-solid fa-bell"></i>
             </a>
@@ -61,11 +65,23 @@
           <li class="nav-item dropdown-profile">
             <a href="" class="profile-btn">
               <img
-                class="nav-link border profile-pic-round rounded-circle d-flex align-items-center justify-content-center"
+                class="nav-link-custom border profile-pic-round rounded-circle d-flex align-items-center justify-content-center"
                 src="{{user.userprofile.profile_picture}}"
                 alt="profie image"
             /></a>
             <ul class="dropdown-container rounded shadow hide-logout">
+              <li>
+                <a
+                  href="{% url 'profile' id=user.id %}"
+                  class="dropdown-item d-flex justify-content-between align-items-center"
+                >
+                  <div>
+                    <i class="fa-solid fa-user logout-icon"></i
+                    ><span class="ps-2">Profile</span>
+                  </div>
+                  <!-- <div>></div> -->
+                </a>
+              </li>
               <li>
                 <a
                   href="/logout/"
@@ -96,16 +112,20 @@
           <div class="first-content pe-5">
             <ul class="left-links ps-0">
               <li class="mb-2 rounded">
-                <a href="" class="d-flex align-items-center gap-4 py-2 px-2"
+                <a
+                  href="{% url 'profile' id=user.id %}"
+                  class="d-flex align-items-center gap-4 py-2 px-2"
                   ><img
-                    class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
+                    class="nav-link-custom border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
                     src="{{user.userprofile.profile_picture}}"
                     alt="profie image"
-                  /><span> Jishnu Km</span>
+                  /><span> {{user.first_name}} {{user.last_name}}</span>
                 </a>
               </li>
               <li class="mb-2 rounded">
-                <a href="" class="d-flex align-items-center gap-4 py-2 px-2"
+                <a
+                  href="{% url 'friends' id=user.id %}"
+                  class="d-flex align-items-center gap-4 py-2 px-2"
                   ><img
                     class="prof-pic-left d-flex align-items-center justify-content-center"
                     src="https://media.publit.io/file/friends-removebg-preview.png"
@@ -114,7 +134,9 @@
                 >
               </li>
               <li class="mb-2 rounded">
-                <a href="" class="d-flex align-items-center gap-4 py-2 px-2"
+                <a
+                  href="{% url 'videos' id=user.id %}"
+                  class="d-flex align-items-center gap-4 py-2 px-2"
                   ><img
                     class="prof-pic-left d-flex align-items-center justify-content-center"
                     src="https://media.publit.io/file/video-removebg-preview.png"
@@ -123,12 +145,14 @@
                 >
               </li>
               <li class="mb-2 rounded">
-                <a href="" class="d-flex align-items-center gap-4 py-2 px-2"
+                <a
+                  href="{% url 'photos' id=user.id %}"
+                  class="d-flex align-items-center gap-4 py-2 px-2"
                   ><img
                     class="prof-pic-left d-flex align-items-center justify-content-center"
                     src="https://media.publit.io/file/image-removebg-preview.png"
                     alt="profie image"
-                  /><span> Images</span></a
+                  /><span> Photos</span></a
                 >
               </li>
               <li class="mb-2 rounded">
@@ -154,40 +178,28 @@
               <hr />
             </div>
 
-            <div class="d-flex align-items-center justify-content-between ps-2">
+            <div
+              class="d-flex align-items-center justify-content-between ps-2 mb-2"
+            >
               <div>
-                <h6 class="text-secondary">Pages</h6>
+                <h6 class="text-secondary">Friend Suggestions</h6>
               </div>
             </div>
 
             <ul class="left-links ps-0">
+              {% for friend in friend_suggestions %}
               <li class="mb-2 rounded">
-                <a href="" class="d-flex align-items-center gap-4 py-2 px-2"
+                <a
+                  href="{% url 'profile' id=friend.id %}"
+                  class="d-flex align-items-center gap-4 py-2 px-2"
                   ><img
-                    class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                    src="https://media.publit.io/file/echopp/5856.jpg"
+                    class="nav-link-custom border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
+                    src="{{friend.userprofile.profile_picture}}"
                     alt="profie image"
-                  /><span> Jishnu Km</span>
+                  /><span>{{friend.first_name}} {{friend.last_name}}</span>
                 </a>
               </li>
-              <li class="mb-2 rounded">
-                <a href="" class="d-flex align-items-center gap-4 py-2 px-2"
-                  ><img
-                    class="prof-pic-left d-flex align-items-center justify-content-center"
-                    src="https://media.publit.io/file/friends-removebg-preview.png"
-                    alt="profie image"
-                  /><span> Friends</span></a
-                >
-              </li>
-              <li class="mb-2 rounded">
-                <a href="" class="d-flex align-items-center gap-4 py-2 px-2"
-                  ><img
-                    class="prof-pic-left d-flex align-items-center justify-content-center"
-                    src="https://media.publit.io/file/video-removebg-preview.png"
-                    alt="profie image"
-                  /><span> Videos</span></a
-                >
-              </li>
+              {% endfor %}
             </ul>
           </div>
         </div>
@@ -196,7 +208,7 @@
             <div class="mid-content-child rounded bg-white p-3">
               <div class="hstack gap-2 pb-3 border-bottom">
                 <img
-                  class="nav-link border profile-pic-round prof-pic rounded-circle d-flex align-items-center justify-content-center"
+                  class="nav-link-custom border profile-pic-round prof-pic rounded-circle d-flex align-items-center justify-content-center"
                   src="{{user.userprofile.profile_picture}}"
                   alt="profie image"
                 />
@@ -215,19 +227,19 @@
                   class="upload-btn d-flex justify-content-between align-items-center"
                 >
                   <div
-                    class="video-up d-flex align-items-center gap-2 px-4 py-2 rounded"
+                    class="video-up video-upload-pop d-flex align-items-center gap-2 px-4 py-2 rounded"
                   >
                     <i class="fa-solid fa-video text-danger"></i>
                     <p class="align-items-center m-0">Video</p>
                   </div>
                   <div
-                    class="img-up d-flex align-items-center gap-2 px-4 py-2 rounded"
+                    class="img-up image-upload-pop d-flex align-items-center gap-2 px-4 py-2 rounded"
                   >
                     <i class="fa-solid fa-image text-success"></i>
                     <p class="align-items-center m-0">Image</p>
                   </div>
                   <div
-                    class="feeling-up d-flex align-items-center gap-2 px-4 py-2 rounded"
+                    class="feeling-up feeling-upload-pop d-flex align-items-center gap-2 px-4 py-2 rounded"
                   >
                     <i class="fa-regular fa-face-smile text-warning"></i>
                     <p class="align-items-center m-0">Feelings</p>
@@ -246,15 +258,19 @@
               >
                 <div class="d-flex gap-2">
                   <div>
-                    <img
-                      class="nav-link border profile-pic-round prof-pic rounded-circle d-flex align-items-center justify-content-center"
-                      src="{{user.userprofile.profile_picture}}"
-                      alt="profie image"
-                    />
+                    <a href="{% url 'profile' id=post.user.id %}">
+                      <img
+                        class="nav-link-custom border profile-pic-round prof-pic rounded-circle d-flex align-items-center justify-content-center"
+                        src="{{post.user.userprofile.profile_picture}}"
+                        alt="profie image"
+                      />
+                    </a>
                   </div>
                   <div class="d-flex align-items-center justify-content-center">
                     <div>
-                      <p class="m-0">{{user.first_name}} {{user.last_name}}</p>
+                      <p class="m-0">
+                        {{post.user.first_name}} {{post.user.last_name}}
+                      </p>
                       <p class="m-0 time">{{post.post.created_at}}</p>
                     </div>
                   </div>
@@ -277,7 +293,10 @@
 
               {% if post.post.post_type == 'Image' %}
 
-              <div class="post-image-container">
+              <div
+                class="post-image-container"
+                id="image-container{{forloop.counter}}"
+              >
                 <img class="post-image" src="{{post.post.image}}" alt="" />
               </div>
 
@@ -392,7 +411,7 @@
                     href=""
                     class="d-flex justify-content-between align-items-center gap-3 py-2 px-2 text-decoration-none text-dark"
                     ><img
-                      class="nav-link border sponsored-img rounded"
+                      class="nav-link-custom border sponsored-img rounded"
                       src="https://scontent.fcok9-1.fna.fbcdn.net/v/t45.1600-4/386144936_23861959934320466_5378965290065412582_n.jpg?stp=cp0_dst-jpg_p296x100_q75_spS444&_nc_cat=109&ccb=1-7&_nc_sid=528f85&_nc_ohc=XHFodeSYUncAX9shoiG&_nc_ht=scontent.fcok9-1.fna&oh=00_AfC1ZfjNT67sRcCuGSJgYImroKYNX8oO_BY6mL6fnRegTg&oe=65B9E53D"
                       alt="ad"
                     />
@@ -411,7 +430,7 @@
                     href=""
                     class="d-flex justify-content-between align-items-center gap-3 py-2 px-2 text-decoration-none text-dark"
                     ><img
-                      class="nav-link border sponsored-img rounded"
+                      class="nav-link-custom border sponsored-img rounded"
                       src="https://scontent.fcok9-1.fna.fbcdn.net/v/t45.1600-4/306522703_23851743005390524_2733980954354730478_n.png?stp=cp0_dst-jpg_p296x100_q90_spS444&_nc_cat=105&ccb=1-7&_nc_sid=528f85&_nc_ohc=ocbH9-AWd_IAX9fZiTW&_nc_ht=scontent.fcok9-1.fna&oh=00_AfBtYGVaLq9Z1l-sQY5uRGRxy88i8jrTijGf0S9YmcB0oA&oe=65B9F67C"
                       alt="ad"
                     />
@@ -444,182 +463,28 @@
               </div>
               <div class="contacts-online">
                 <ul class="contacts-online-list ps-0">
+                  {% for usr in online_friends %}
                   <li class="mb-0 person-online rounded">
                     <a
                       href=""
                       class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
+                    >
+                      <div class="contacts-online-container">
+                        <img
+                          class="nav-link-custom border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
+                          src="{{usr.userprofile.profile_picture}}"
+                          alt="profie image"
+                        />
+                        {% if usr.userprofile.online == True %}
+                        <div class="online-status online"></div>
+                        {% else %}
+                        <div class="online-status offline"></div>
+                        {% endif %}
+                      </div>
+                      <span> {{usr.first_name}} {{usr.last_name}}</span>
                     </a>
                   </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex person-online align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
-                  <li class="mb-0 person-online rounded">
-                    <a
-                      href=""
-                      class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
-                      ><img
-                        class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                        src="https://media.publit.io/file/echopp/5856.jpg"
-                        alt="profie image"
-                      /><span> Jishnu Km</span>
-                    </a>
-                  </li>
+                  {% endfor %}
                 </ul>
               </div>
 
@@ -641,10 +506,10 @@
                     href=""
                     class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
                     ><img
-                      class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
+                      class="nav-link-custom border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
                       src="https://media.publit.io/file/echopp/5856.jpg"
                       alt="profie image"
-                    /><span> Jishnu Km</span>
+                    /><span> Python Programmers</span>
                   </a>
                 </li>
               </ul>
@@ -671,14 +536,14 @@
             class="d-flex align-items-center gap-2 py-2 px-2 text-decoration-none text-dark"
           >
             <img
-              class="nav-link border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
+              class="nav-link-custom border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
               src="{{user.userprofile.profile_picture}}"
               alt="profie image"
             /><span>{{user.first_name}} {{user.last_name}}</span>
           </div>
         </div>
         <form
-          action="{% url 'uploadpost' %}"
+          action="{% url 'uploadpost'  page='home' %}"
           method="post"
           enctype="multipart/form-data"
         >
@@ -702,6 +567,7 @@
               id="imageInput"
               accept="image/*"
             />
+            <input type="text" name="posttype" value="Image" hidden />
           </div>
           <div class="mt-2 file-upload-inp-video">
             <input
@@ -711,6 +577,7 @@
               id="videoInput"
               accept="video/*"
             />
+            <input type="text" name="posttype" value="video" hidden />
           </div>
 
           <div
@@ -746,9 +613,24 @@
     <script src="{% static 'js/plyr.js' %}"></script>
 
     <script>
-      for (let index = 1; index < {{post_count}}; index++) {
+        let count={{post_count}}
+      for (let index = 1; index < parseInt(count)+1; index++) {
         const player = new Plyr(`#player${index}`);
       }
+    </script>
+
+    <script src="{% static 'js/js-image-zoom.js' %}"></script>
+    <script>
+      // var options = {
+      //   width: 400,
+      //   zoomWidth: 500,
+      //   offset: { vertical: 0, horizontal: 10 },
+      // };
+      // let count2={{post_count}}
+      // for (let index = 1; index < parseInt(count2)+1; index++) {
+
+      //   new ImageZoom(document.getElementById(`image-container${index}`), options);
+      // }
     </script>
 
     <script src="{% static 'js/scripts.js' %}"></script>
