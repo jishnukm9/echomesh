@@ -6,12 +6,26 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EchoMesh</title>
+    <link
+      rel="shortcut icon"
+      href="{% static 'images/favicon.ico' %}"
+      type="image/x-icon"
+    />
     <link rel="stylesheet" href="{% static 'css/plyr.css' %}" />
     <link rel="stylesheet" href="{% static 'css/fontawesome.css' %}" />
     <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
     <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
   </head>
   <body>
+
+    
+    {% if messages %}
+      <ul class="messages-container" style="position:absolute;top:0;left:44%;">
+        {% for message in messages %}
+          <li class="message-item {% if message.tags == 'success' %}success{% endif %}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
     <div
       class="login-container d-flex justify-content-center align-items-center"
     >
@@ -108,7 +122,7 @@
                   type="password"
                   class="form-control"
                   placeholder="Password"
-                  name="passowrd"
+                  name="password"
                 />
               </div>
             </div>
@@ -117,18 +131,18 @@
                 <p class="m-0 p-0 text-muted db-text">Date of birth</p>
               </div>
               <div class="col">
-                <select name="day" id="" class="form-control">
-                  <option value="27">27</option>
+                <select name="day" id="daySelect" class="form-control">
+                  <!-- Options will be added dynamically with JavaScript -->
                 </select>
               </div>
               <div class="col">
-                <select name="month" id="" class="form-control">
-                  <option value="January">January</option>
+                <select name="month" id="monthSelect" class="form-control">
+                  <!-- Options will be added dynamically with JavaScript -->
                 </select>
               </div>
               <div class="col">
-                <select name="year" id="" class="form-control">
-                  <option value="1994">1994</option>
+                <select name="year" id="yearSelect" class="form-control">
+                  <!-- Options will be added dynamically with JavaScript -->
                 </select>
               </div>
             </div>
@@ -141,9 +155,9 @@
                   <input
                     class="form-check-input"
                     type="radio"
-                    name="flexRadioDefault"
-                    id="flexRadioDefault1"
                     name="gender"
+                    id="flexRadioDefault1"
+                    
                     value="Female"
                   />
                   <label class="form-check-label" for="flexRadioDefault1">
@@ -156,9 +170,9 @@
                   <input
                     class="form-check-input"
                     type="radio"
-                    name="flexRadioDefault"
-                    id="flexRadioDefault2"
                     name="gender"
+                    id="flexRadioDefault2"
+                   
                     value="Male"
                     checked
                   />

@@ -5,6 +5,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EchoMesh</title>
+    <link
+      rel="shortcut icon"
+      href="{% static 'images/favicon.ico' %}"
+      type="image/x-icon"
+    />
     <link rel="stylesheet" href="{% static 'css/plyr.css' %}" />
 
     <link rel="stylesheet" href="{% static 'css/fontawesome.css' %}" />
@@ -154,10 +159,16 @@
             >
           </li>
           <li class="nav-item not-active-item">
-            <a class="nav-link text-dark" href="#">About</a>
+            <a class="nav-link text-dark" href="{% url 'about' id=user.id %}"
+              >About</a
+            >
           </li>
           <li class="nav-item">
-            <a class="nav-link active-tab text-blue" href="#">Friends</a>
+            <a
+              class="nav-link active-tab text-blue"
+              href="{% url 'about' id=user.id %}"
+              >Friends</a
+            >
           </li>
           {% if is_current_user %}
           <li class="nav-item not-active-item">
@@ -178,53 +189,53 @@
           </li>
         </ul>
       </div>
+    </div>
 
-      <div class="friend-requests-container mt-3 p-3 bg-white rounded">
-        <div class="friend-request-header d-flex justify-content-between">
-          <div><h6>Friends</h6></div>
-          <div></div>
-        </div>
-        <div class="friend-request-body mt-2">
-          <div class="row">
-            {% for fr in all_friends %}
-            <div class="col-lg-6 mb-3">
-              <div
-                class="fr-req d-flex justify-content-between align-items-center border rounded p-2"
+    <div class="friend-requests-container mt-3 p-3 bg-white rounded">
+      <div class="friend-request-header d-flex justify-content-between">
+        <div><h6>Friends</h6></div>
+        <div></div>
+      </div>
+      <div class="friend-request-body mt-2">
+        <div class="row">
+          {% for fr in all_friends %}
+          <div class="col-lg-6 mb-3">
+            <div
+              class="fr-req d-flex justify-content-between align-items-center border rounded p-2"
+            >
+              <a
+                href="{% url 'profile' id=fr.id %}"
+                class="text-decoration-none text-dark"
               >
-                <a
-                  href="{% url 'profile' id=fr.id %}"
-                  class="text-decoration-none text-dark"
-                >
-                  <div class="d-flex align-items-center gap-2">
-                    <div class="">
-                      <img
-                        class="req-image rounded"
-                        src="{{fr.userprofile.profile_picture}}"
-                        alt=""
-                      />
-                    </div>
-
-                    <div>
-                      <span>{{fr.first_name}} {{fr.last_name}}</span>
-                    </div>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="">
+                    <img
+                      class="req-image rounded"
+                      src="{{fr.userprofile.profile_picture}}"
+                      alt=""
+                    />
                   </div>
-                </a>
-                <div>
-                  {% if is_current_user %}
-                  <a href="{% url 'unfriend' id=fr.id %}" class="btn btn-danger"
-                    >Unfriend</a
-                  >
-                  {% endif %}
+
+                  <div>
+                    <span>{{fr.first_name}} {{fr.last_name}}</span>
+                  </div>
                 </div>
+              </a>
+              <div>
+                {% if is_current_user %}
+                <a href="{% url 'unfriend' id=fr.id %}" class="btn btn-danger"
+                  >Unfriend</a
+                >
+                {% endif %}
               </div>
             </div>
-
-            {% endfor %}
           </div>
+
+          {% endfor %}
         </div>
       </div>
     </div>
-
+    <div class="footer mt-5"></div>
     <script>
       let csrf_token = "{{csrf_token}}";
     </script>

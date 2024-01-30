@@ -5,6 +5,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EchoMesh</title>
+    <link
+      rel="shortcut icon"
+      href="{% static 'images/favicon.ico' %}"
+      type="image/x-icon"
+    />
     <link rel="stylesheet" href="{% static 'css/plyr.css' %}" />
 
     <link rel="stylesheet" href="{% static 'css/fontawesome.css' %}" />
@@ -166,7 +171,9 @@
             >
           </li>
           <li class="nav-item not-active-item">
-            <a class="nav-link text-dark" href="#">About</a>
+            <a class="nav-link text-dark" href="{% url 'about' id=user.id %}"
+              >About</a
+            >
           </li>
           <li class="nav-item not-active-item">
             <a class="nav-link text-dark" href="{% url 'friends' id=user.id %}"
@@ -193,51 +200,52 @@
           </li>
         </ul>
       </div>
+    </div>
 
-      <div class="posts-container mt-3">
-        <div
-          class="middle-content-two mb-2 p-3 bg-white rounded d-flex justify-content-between"
-        >
-          <div><h6>Photos</h6></div>
-          <div></div>
-        </div>
-        {% for post in posts %}
-
-        <div class="middle-content-two mb-2">
-          <div class="middle-content-two-child rounded bg-white p-3">
-            {% if post.post.post_type == 'Image' %}
-
-            <div class="post-image-container">
-              <img class="post-image" src="{{post.post.image}}" alt="" />
-            </div>
-
-            {% elif post.post.post_type == 'Video' %}
-
-            <div class="post-video-container">
-              <video
-                id="player{{forloop.counter}}"
-                playsinline
-                controls
-                data-poster="/path/to/poster.jpg"
-              >
-                <source src="{{post.post.video}}" type="video/mp4" />
-
-                <!-- Captions are optional -->
-                <track
-                  kind="captions"
-                  label="English captions"
-                  src="/path/to/captions.vtt"
-                  srclang="en"
-                  default
-                />
-              </video>
-            </div>
-            {% endif %}
-          </div>
-        </div>
-
-        {% endfor %}
+    <div class="posts-container mt-3">
+      <div
+        class="middle-content-two mb-2 p-3 bg-white rounded d-flex justify-content-between"
+      >
+        <div><h6>Photos</h6></div>
+        <div></div>
       </div>
+      {% for post in posts %}
+
+      <div class="middle-content-two mb-2">
+        <div class="middle-content-two-child rounded bg-white p-3">
+          {% if post.post.post_type == 'Image' %}
+
+          <div class="post-image-container">
+            <img class="post-image" src="{{post.post.image}}" alt="" />
+          </div>
+
+          {% elif post.post.post_type == 'Video' %}
+
+          <div class="post-video-container">
+            <video
+              id="player{{forloop.counter}}"
+              playsinline
+              controls
+              data-poster="/path/to/poster.jpg"
+            >
+              <source src="{{post.post.video}}" type="video/mp4" />
+
+              <!-- Captions are optional -->
+              <track
+                kind="captions"
+                label="English captions"
+                src="/path/to/captions.vtt"
+                srclang="en"
+                default
+              />
+            </video>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+
+      {% endfor %}
+      <div class="footer mt-5"></div>
     </div>
 
     <script>

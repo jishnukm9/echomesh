@@ -14,6 +14,7 @@ from django.db.models import Q
 from.utils import publitio_image_upload,publitio_video_upload
 from itertools import chain
 from django.urls import reverse
+from datetime import datetime
 
 
 
@@ -50,21 +51,35 @@ def logout_view(request):
 
 def registration_view(request):
 
-    firstname=request.POST.get('firstname','')
-    lastname=request.POST.get('lastname','')
-    email=request.POST.get('email','')
+    firstname=request.POST.get('firstname')
+    lastname=request.POST.get('lastname')
+    email=request.POST.get('email')
     username=email
-    password=request.POST.get('password','')
+    password=request.POST.get('password')
+    day = int(request.POST.get('day'))
+    month = int(request.POST.get('month'))
+    year = int(request.POST.get('year'))
+    gender=request.POST.get('gender')
 
-    print("-",firstname,lastname,email,password)
+    date_object = datetime(year, month, day)
+
+
 
     try:
         user = User.objects.create_user(username=username,password=password,email=email,first_name=firstname,last_name=lastname)
-        user_profile_obj=UserProfile()
-        user_profile_obj.user=user
-        user_profile_obj.save()
+        userprofile= UserProfile()
+        userprofile.user=user
+        userprofile.cover_picture='https://media.publit.io/file/echocp/defaultcover.jpg'
+        if gender == 'Male':
+            userprofile.profile_picture='https://media.publit.io/file/echopp/man-4140048.png'
+        else:
+                userprofile.profile_picture='https://media.publit.io/file/echopp/woman-4140047.png'
+        userprofile.dob=date_object
+        userprofile.save()
+
+        print("userprofile=",userprofile)
+        print("userprofile above")
         auth_login(request,user)
-        
         return redirect('home')
     except IntegrityError as e:
         if "UNIQUE constraint failed: auth_user.username" in str(e):
@@ -487,3 +502,91 @@ def videos(request,id):
     }
 
     return render(request,"core/videos.html",context)
+
+
+
+
+
+
+
+
+@login_required
+def about(request,id):
+
+   
+    current_user=request.user
+    user=User.objects.filter(id=id).first()
+    is_current_user=True
+    if user!=current_user:
+        is_current_user=False
+   
+    all_friends = set(chain(*Friendship.objects.filter(
+            (Q(sender=user, status='Friends') | Q(receiver=user, status='Friends'))
+        ).values_list('receiver', 'sender')))
+    online_friends = [usr for obj in all_friends if (usr := User.objects.filter(id=obj).first()) and usr != user]
+    
+    friends_count=len(online_friends)
+
+
+
+
+    context={
+    "user":user,
+    "friends_count":friends_count,
+    'current_user':current_user,
+    "all_friends":online_friends,
+    "is_current_user":is_current_user,
+    }
+
+    return render(request,"core/about.html",context)
+
+
+
+
+
+@login_required
+def edit_profile(request,page):
+
+    try:
+        pp=request.FILES.get('profilepicture')
+        cp=request.FILES.get('coverpicture')
+        user=request.user
+        image_url1=None
+        if pp:
+            image_resp =publitio_image_upload(bytedata=pp,folder_id='1J5Bel9l',title=f"profile picture by {user.first_name}")
+            if image_resp['file_url']:
+                if image_resp['file_url'] != 'File upload is not successfull. Please try again':
+                    image_url1 = image_resp['file_url']
+        image_url2=None
+        if cp:
+            image_resp =publitio_image_upload(bytedata=cp,folder_id='kQHy9jLN',title=f"cover picture by {user.first_name}")
+            if image_resp['file_url']:
+                if image_resp['file_url'] != 'File upload is not successfull. Please try again':
+                    image_url2 = image_resp['file_url']
+
+        userprofile = UserProfile.objects.filter(user=user).first()
+        if image_url1:
+            userprofile.profile_picture=image_url1
+        if image_url2:
+            userprofile.cover_picture=image_url2
+        userprofile.save()
+    except:
+        messages.error(request, "An Error Occured.")
+
+    if page=="profile":
+        return redirect(reverse('profile',kwargs={"id":user.id}))
+    elif page == "about":
+        return redirect(reverse('about',kwargs={"id":user.id}))
+    elif page == "friends":
+        return redirect(reverse('friends',kwargs={"id":user.id}))
+    elif page == "friendrequest":
+        return redirect('friendrequest')
+    elif page == 'photos':
+        return redirect(reverse('photos',kwargs={"id":user.id}))
+    elif page == 'videos':
+        return redirect(reverse('videos',kwargs={"id":user.id}))
+    else:
+        return redirect(reverse('profile',kwargs={"id":user.id}))
+
+
+

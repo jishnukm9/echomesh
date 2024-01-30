@@ -5,6 +5,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>EchoMesh</title>
+    <link
+      rel="shortcut icon"
+      href="{% static 'images/favicon.ico' %}"
+      type="image/x-icon"
+    />
     <link rel="stylesheet" href="{% static 'css/plyr.css' %}" />
 
     <link rel="stylesheet" href="{% static 'css/fontawesome.css' %}" />
@@ -156,7 +161,9 @@
             >
           </li>
           <li class="nav-item not-active-item">
-            <a class="nav-link text-dark" href="#">About</a>
+            <a class="nav-link text-dark" href="{% url 'about' id=user.id %}"
+              >About</a
+            >
           </li>
           <li class="nav-item not-active-item">
             <a class="nav-link text-dark" href="{% url 'friends' id=user.id %}"
@@ -182,48 +189,49 @@
           </li>
         </ul>
       </div>
+    </div>
 
-      <div class="friend-requests-container mt-3 p-3 bg-white rounded">
-        <div class="friend-request-header d-flex justify-content-between">
-          <div><h6>Friend Requests</h6></div>
-          <div></div>
-        </div>
-        <div class="friend-request-body mt-2">
-          <div class="row">
-            {% for fr in friend_requests %}
-            <div class="col-lg-6 mb-3">
-              <div
-                class="fr-req d-flex justify-content-between align-items-center border rounded p-2"
-              >
-                <div class="d-flex align-items-center gap-2">
-                  <div class="">
-                    <img
-                      class="req-image rounded"
-                      src="{{fr.userprofile.profile_picture}}"
-                      alt=""
-                    />
-                  </div>
-
-                  <div>
-                    <span>{{fr.first_name}} {{fr.last_name}}</span>
-                  </div>
+    <div class="friend-requests-container mt-3 p-3 bg-white rounded">
+      <div class="friend-request-header d-flex justify-content-between">
+        <div><h6>Friend Requests</h6></div>
+        <div></div>
+      </div>
+      <div class="friend-request-body mt-2">
+        <div class="row">
+          {% for fr in friend_requests %}
+          <div class="col-lg-6 mb-3">
+            <div
+              class="fr-req d-flex justify-content-between align-items-center border rounded p-2"
+            >
+              <div class="d-flex align-items-center gap-2">
+                <div class="">
+                  <img
+                    class="req-image rounded"
+                    src="{{fr.userprofile.profile_picture}}"
+                    alt=""
+                  />
                 </div>
+
                 <div>
-                  <a
-                    href="{% url 'acceptrequest' sender=fr.id %}"
-                    class="btn btn-success"
-                    >Accept</a
-                  >
+                  <span>{{fr.first_name}} {{fr.last_name}}</span>
                 </div>
               </div>
+              <div>
+                <a
+                  href="{% url 'acceptrequest' sender=fr.id %}"
+                  class="btn btn-success"
+                  >Accept</a
+                >
+              </div>
             </div>
-
-            {% endfor %}
           </div>
+
+          {% endfor %}
         </div>
       </div>
     </div>
 
+    <div class="footer mt-5"></div>
     <script>
       let csrf_token = "{{csrf_token}}";
     </script>

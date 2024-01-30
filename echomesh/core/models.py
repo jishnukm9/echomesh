@@ -10,15 +10,15 @@ from django.contrib.auth.models import User
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="userprofile")
-    college = models.CharField(max_length=200)
-    college_passed_year = models.IntegerField() 
-    highschool = models.CharField(max_length=200)
-    highschool_passed_year = models.IntegerField()
-    city = models.CharField(max_length=50)
-    district = models.CharField(max_length=50)
-    state = models.CharField(max_length=50)
-    country = models.CharField(max_length=50)
-    phone = models.CharField(max_length=15)  
+    college = models.CharField(max_length=200,null=True,blank=True,default=None)
+    college_passed_year = models.IntegerField(null=True,blank=True,default=None) 
+    highschool = models.CharField(max_length=200,null=True,blank=True,default=None)
+    highschool_passed_year = models.IntegerField(null=True,blank=True,default=None)
+    city = models.CharField(max_length=50,null=True,blank=True,default=None)
+    district = models.CharField(max_length=50,null=True,blank=True,default=None)
+    state = models.CharField(max_length=50,null=True,blank=True,default=None)
+    country = models.CharField(max_length=50,null=True,blank=True,default=None)
+    phone = models.CharField(max_length=15,null=True,blank=True,default=None)  
     SINGLE = 'Single'
     IN_A_RELATIONSHIP = 'In a relationship'
     MARRIED = 'Married'

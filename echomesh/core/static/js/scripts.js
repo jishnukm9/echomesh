@@ -221,3 +221,101 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 });
+
+// # about section
+
+document.addEventListener("DOMContentLoaded", function () {
+  const firstElem = document.querySelector(".about-link-1");
+  firstElem.style.backgroundColor = "#ebf5ff";
+  firstElem.style.color = "#2375fb";
+
+  const aboutLink = document.querySelector(".about-links");
+
+  aboutLink.addEventListener("click", function (e) {
+    e.preventDefault();
+    const aboutUl = document.querySelector(".about-ul");
+    const listLi = aboutUl.querySelectorAll("li");
+    listLi.forEach(function (elem) {
+      if (elem == e.target) {
+        for (let i = 1; i <= 6; i++) {
+          if (elem.classList.contains(`about-link-${i}`)) {
+            const detail = document.querySelector(`.about-details-link-${i}`);
+            detail.classList.remove("about-display-none");
+            detail.classList.add("about-display-block");
+
+            const clickedElem = document.querySelector(`.about-link-${i}`);
+            clickedElem.style.backgroundColor = "#ebf5ff";
+            clickedElem.style.color = "#2375fb";
+          } else {
+            const detail = document.querySelector(`.about-details-link-${i}`);
+            detail.classList.remove("about-display-block");
+            detail.classList.add("about-display-none");
+            const clickedElem = document.querySelector(`.about-link-${i}`);
+            clickedElem.style.backgroundColor = "#fff";
+            clickedElem.style.color = "#444";
+          }
+        }
+      }
+    });
+  });
+});
+
+// Dynamically populate the year select options
+document.addEventListener("DOMContentLoaded", function () {
+  const yearSelect = document.getElementById("yearSelect");
+  const currentYear = new Date().getFullYear();
+  const startYear = 1900;
+
+  for (let year = currentYear; year >= startYear; year--) {
+    const option = document.createElement("option");
+    option.value = year;
+    option.textContent = year;
+    yearSelect.appendChild(option);
+  }
+
+  // Dynamically populate the month select options
+  const monthSelect = document.getElementById("monthSelect");
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  months.forEach((month, index) => {
+    const option = document.createElement("option");
+    option.value = index + 1;
+    option.textContent = month;
+    monthSelect.appendChild(option);
+  });
+
+  // Dynamically populate the day select options
+  const daySelect = document.getElementById("daySelect");
+  for (let day = 1; day <= 31; day++) {
+    const option = document.createElement("option");
+    option.value = day;
+    option.textContent = day;
+    daySelect.appendChild(option);
+  }
+});
+
+// video/image/feeling upload form pop up
+document.addEventListener("DOMContentLoaded", function () {
+  const bodyWrapper = document.querySelector(".body-wrapper-two-edit-profile");
+  const editBtn = document.querySelector(".edit-profile-btn");
+  const closeBtn = document.querySelector(".close-post-upload-edit");
+  editBtn.addEventListener("click", function (e) {
+    bodyWrapper.style.display = "block";
+  });
+  closeBtn.addEventListener("click", function (e) {
+    bodyWrapper.style.display = "none";
+  });
+});

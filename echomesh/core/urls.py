@@ -18,4 +18,6 @@ urlpatterns = [
     path('unfriend/<id>/',views.unfriend,name='unfriend'),
     path('photos/<id>/',views.photos,name='photos'),
     path('videos/<id>/',views.videos,name='videos'),
+    path('about/<id>/',views.about,name='about'),
+    path('edit-profile/<page>/',views.edit_profile,name='editprofile'),
 ]
