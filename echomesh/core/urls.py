@@ -20,4 +20,9 @@ urlpatterns = [
     path('videos/<id>/',views.videos,name='videos'),
     path('about/<id>/',views.about,name='about'),
     path('edit-profile/<page>/',views.edit_profile,name='editprofile'),
+    path('save-post/',views.save_post,name='savepost'),
+    path('unsave-post/',views.unsave_post,name='unsavepost'),
+    path('savedposts/<id>/',views.saved_posts,name='savedposts'),
+    path('get-post/',views.get_post,name='getpost'),
+    path('add-comment/',views.addcomment,name='addcomment'),
 ]

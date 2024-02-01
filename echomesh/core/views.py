@@ -98,11 +98,17 @@ def check_post_activity(post_obj,current_user):
     comment_obj=Comment.objects.filter(user=current_user,post=post_obj).first()
     comment_count=Comment.objects.filter(post=post_obj).count
     share_obj=Share.objects.filter(user=current_user,post=post_obj).first()
+    share_count=Share.objects.filter(post=post_obj).count
     save_obj=Save.objects.filter(user=current_user,post=post_obj).first()
+    save_count=Save.objects.filter(post=post_obj).count
     resp['post']=post_obj
     resp['like_count']=like_count
     resp['comment_count']=comment_count
     resp['user']=post_obj.user
+    resp['share_count'] = share_count
+    resp['save_count'] = save_count
+    resp['shared'] = False
+    
     if like_obj:
         resp['current_user_liked']=True
     else:
@@ -120,6 +126,45 @@ def check_post_activity(post_obj,current_user):
     else:
         resp['current_user_saved']=False
     return resp
+
+
+
+
+# def check_shared_post_activity(post_obj,current_user,shared_user):
+#     resp={}
+#     like_obj=Like.objects.filter(user=current_user,post=post_obj).first()
+#     like_count=Like.objects.filter(post=post_obj).count
+#     comment_obj=Comment.objects.filter(user=current_user,post=post_obj).first()
+#     comment_count=Comment.objects.filter(post=post_obj).count
+#     share_obj=Share.objects.filter(user=current_user,post=post_obj).first()
+#     share_count=Share.objects.filter(post=post_obj).count
+#     save_obj=Save.objects.filter(user=current_user,post=post_obj).first()
+#     save_count=Save.objects.filter(post=post_obj).count
+#     resp['post']=post_obj
+#     resp['like_count']=like_count
+#     resp['comment_count']=comment_count
+#     resp['user']=post_obj.user
+#     resp['share_count'] = share_count
+#     resp['save_count'] = save_count
+#     resp['shared'] = True
+#     resp['shared_user'] = shared_user
+#     if like_obj:
+#         resp['current_user_liked']=True
+#     else:
+#         resp['current_user_liked']=False
+#     if comment_obj:
+#         resp['current_user_commented']=True
+#     else:
+#         resp['current_user_commented']=False
+#     if share_obj:
+#         resp['current_user_shared']=True
+#     else:
+#         resp['current_user_shared']=False
+#     if save_obj:
+#         resp['current_user_saved']=True
+#     else:
+#         resp['current_user_saved']=False
+#     return resp
 
 
 
@@ -165,11 +210,14 @@ def home(request):
             friend_suggestions = friend_suggestions
     else:
         friend_suggestions = []
+
+    ads =Ad.objects.all().order_by("?")[::2]
     context={'posts':post_obj_final,
     "user":user,
     "post_count":post_count,
     "friend_suggestions":friend_suggestions,
-    "online_friends":online_friends_sorted}
+    "online_friends":online_friends_sorted,
+    "ads":ads}
 
     return render(request,'core/index.html',context)
 
@@ -300,6 +348,61 @@ def profile(request,id):
     }
 
     return render(request,"core/profile.html",context)
+
+
+
+
+
+
+
+
+@login_required
+def saved_posts(request,id):
+
+    current_user=request.user
+    user=User.objects.filter(id=id).first()
+    is_current_user=True
+    if user!=current_user:
+        is_current_user=False
+
+    
+    request_obj = Friendship.objects.filter((Q(sender=current_user)&Q(receiver=user))|(Q(sender=user)&Q(receiver=current_user))).first()
+    if request_obj:
+        if request_obj.status == 'Pending':
+            request_status='Pending'
+        elif request_obj.status == 'Friends':
+            request_status='Friends'
+    else:
+        request_status='Not Friend'
+   
+    posts =[Post.objects.filter(id=objs).first() for objs in list(chain(*Save.objects.filter(user=user).values_list('post')))]
+    print("posts=",posts)
+    posts_obj = sorted(posts, key=lambda x: x.created_at, reverse=True)
+
+
+    all_friends = set(chain(*Friendship.objects.filter(
+            (Q(sender=user, status='Friends') | Q(receiver=user, status='Friends'))
+        ).values_list('receiver', 'sender')))
+    online_friends = [usr for obj in all_friends if (usr := User.objects.filter(id=obj).first()) and usr != user]
+    
+    friends_count=len(online_friends)
+
+    post_obj_final = list(map(partial(check_post_activity, current_user=user), posts_obj))
+    post_count=len(posts_obj)
+
+
+    context={'posts':post_obj_final,
+    "user":user,
+    "post_count":post_count,
+    "friends_count":friends_count,
+    "current_user":current_user,
+    "is_current_user":is_current_user,
+    "request_status":request_status,
+    }
+
+    return render(request,"core/saved.html",context)
+
+
 
 
 
@@ -590,3 +693,135 @@ def edit_profile(request,page):
 
 
 
+
+@login_required
+def save_post(request):
+    user=request.user
+    request_body= QueryDict(request.body)
+    resp={"Response":"Success"}
+    try:
+        json_data = json.loads(list(request_body.keys())[0]) 
+        post_id=json_data.get('post_id')
+        save_obj=Save()
+        save_obj.user=user
+        save_obj.post=Post.objects.filter(id=post_id).first()
+        save_obj.save()
+    except:
+        resp={'Response':"Error"}
+    return JsonResponse(resp)
+
+
+
+@login_required
+def unsave_post(request):
+    user=request.user
+    request_body= QueryDict(request.body)
+    resp={"Response":"Success"}
+    try:
+        json_data = json.loads(list(request_body.keys())[0]) 
+        post_id=json_data.get('post_id')
+        save_obj=Save.objects.filter(Q(user=user)&Q(post=Post.objects.filter(id=post_id).first())).first()
+        save_obj.delete()
+    except:
+        resp['Response':"Error"]
+    return JsonResponse(resp)
+
+
+def get_sub_comment_details(comment_id):
+    resp=[]
+    comments=SubComments.objects.filter(comment=Comment.objects.filter(id=(comment_id)).first())
+    if comments:
+        for comment in comments:
+            dic={}
+            dic['comment_id']=comment.id
+            dic['comment_text']=comment.comment
+            dic['user_id']=comment.user.id
+            dic['user_name']=f"{comment.user.first_name} {comment.user.last_name}"
+            dic['user_picture']=comment.user.userprofile.profile_picture
+            # dic['comment_likes']=SubLike.objects.filter(comment=comment).count
+            # dic['sub_comment_details']=get_sub_comment_details(comment_id)
+    return resp
+
+def get_comment_details(post_id):
+    resp=[]
+    comments=Comment.objects.filter(post=Post.objects.filter(id=post_id).first()).order_by('-pk')
+    if comments:
+        for comment in comments:
+            dic={}
+            dic['comment_id']=comment.id
+            dic['comment_text']=comment.comment
+            dic['user_id']=comment.user.id
+            dic['user_name']=f"{comment.user.first_name} {comment.user.last_name}"
+            dic['user_picture']=comment.user.userprofile.profile_picture
+            dic['comment_likes']=SubLike.objects.filter(comment=comment).count()
+            dic['commented_date']=comment.created_at
+            dic['sub_comment_details']=get_sub_comment_details(comment.id)
+
+            resp.append(dic)
+    return resp
+
+
+def get_post(request):
+    current_user=request.user
+    request_body= QueryDict(request.body)
+    json_data = json.loads(list(request_body.keys())[0]) 
+    post_id=json_data.get('post_id')
+    post_obj=Post.objects.filter(id=post_id).first()
+    like_count=Like.objects.filter(post=post_obj).count()
+    comment_count=Comment.objects.filter(post=post_obj).count()
+    data={"current_user":{
+        "id":current_user.id,
+        "image":current_user.userprofile.profile_picture,
+        "name":f"{current_user.first_name} {current_user.last_name}",
+        
+    },
+    "posted_user":{
+        "id":post_obj.user.id,
+        "image":post_obj.user.userprofile.profile_picture,
+        "name":f"{post_obj.user.first_name} {post_obj.user.last_name}",
+    },
+    "post_details":{
+        "id":post_id,
+        "post_type":post_obj.post_type,
+        "post_image":post_obj.image,
+        "post_video":post_obj.video,
+        "post_text":post_obj.text,
+        'post_likes_count':like_count,
+        'post_date':post_obj.created_at,
+        'comment_count':comment_count,
+        "comments":get_comment_details(post_id)
+    }}
+
+
+
+
+    resp={"Response":"Success",
+          "Details":data}
+    print(resp)
+    return JsonResponse(resp)
+
+
+
+
+
+
+def addcomment(request):
+    current_user=request.user
+    request_body= QueryDict(request.body)
+    json_data = json.loads(list(request_body.keys())[0]) 
+    post_id=json_data.get('post_id')
+    post_text=json_data.get('post_text')
+
+    comment=Comment()
+    comment.user=current_user
+    comment.post=Post.objects.filter(id=post_id).first()
+    comment.comment=post_text
+    comment.save()
+
+    
+
+
+    resp={"Response":"Success"}
+    resp['Details']=get_comment_details(post_id)
+    
+    return JsonResponse(resp)

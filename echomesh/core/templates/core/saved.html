@@ -164,11 +164,8 @@
       </div>
       <div class="profile-tabs">
         <ul class="nav nav-pills">
-          <li class="nav-item">
-            <a
-              class="nav-link active-tab text-blue"
-              aria-current="page"
-              href="#"
+          <li class="nav-item not-active-item">
+            <a class="nav-link text-dark" href="{% url 'profile' id=user.id %}"
               >Posts</a
             >
           </li>
@@ -202,7 +199,7 @@
               >Videos</a
             >
           </li>
-          <li class="nav-item not-active-item">
+          <li class="nav-item active-tab text-blue">
             <a
               class="nav-link text-dark"
               href="{% url 'savedposts' id=user.id %}"
@@ -215,7 +212,7 @@
 
     <div class="posts-container mt-3">
       {% if is_current_user %}
-      <div class="middle-content mb-3">
+      <!-- <div class="middle-content mb-3">
         <div class="mid-content-child rounded bg-white p-3">
           <div class="hstack gap-2 pb-3 border-bottom">
             <img
@@ -227,7 +224,7 @@
             <input
               type="text"
               class="form-control whats-on"
-              placeholder="What's on your mind {{user.first_name}}?"
+              placeholder="What's on your mind Jishnu?"
               autocomplete="off"
               id="whats-on-mind"
             />
@@ -258,7 +255,7 @@
             </div>
           </div>
         </div>
-      </div>
+      </div> -->
       {% endif %} {% for post in posts %}
 
       <div class="middle-content-two mb-2">
@@ -451,7 +448,7 @@
               id=""
               cols="30"
               rows="10"
-              placeholder="What's on your mind {{user.first_name}}?"
+              placeholder="What's on your mind Jishnu?"
               class="form-control border ps-4"
             ></textarea>
           </div>

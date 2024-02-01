@@ -53,6 +53,7 @@ class UserProfile(models.Model):
     gender=models.CharField(max_length=10,choices=GENDER_CHOICES,default=MALE)
     online=models.BooleanField(default=True)
     
+    
 
     def __str__(self):
         return self.user.first_name  
@@ -111,7 +112,7 @@ class Comment(models.Model):
 class SubLike(models.Model):
     post=models.ForeignKey(Post, on_delete=models.CASCADE,related_name="cpost_ommentlikes")
     user=models.ForeignKey(User, on_delete=models.CASCADE,related_name="user_commentlikes")
-    comment=models.ForeignKey(User, on_delete=models.CASCADE,related_name="comment_commentlikes")
+    comment=models.ForeignKey(Comment, on_delete=models.CASCADE,related_name="comment_commentlikes")
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified_at = models.DateTimeField(auto_now_add=True)
 
@@ -121,8 +122,9 @@ class SubLike(models.Model):
 class SubComments(models.Model):
     post=models.ForeignKey(Post, on_delete=models.CASCADE,related_name="post_commentcomments")
     user=models.ForeignKey(User, on_delete=models.CASCADE,related_name="user_commentcomments")
-    comment=models.ForeignKey(User, on_delete=models.CASCADE,related_name="comment_commentcomments")
+    comment=models.ForeignKey(Comment, on_delete=models.CASCADE,related_name="comment_commentcomments")
     created_at = models.DateTimeField(auto_now_add=True)
+    comment_text=models.TextField(default=None,null=True,blank=True)
     last_modified_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -165,6 +167,17 @@ class Friendship(models.Model):
 
     def __str__(self):
         return f"{self.sender} -> {self.receiver}"
+    
+
+
+class Ad(models.Model):
+    image=models.URLField(max_length=500)
+    description=models.TextField(max_length=200)
+    website=models.URLField(max_length=100)
+    company=models.TextField(max_length=200)
+
+    def __str__(self):
+        return self.company
 
 
 

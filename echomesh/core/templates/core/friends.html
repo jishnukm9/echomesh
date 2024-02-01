@@ -139,7 +139,9 @@
             </div>
             <div class="col-lg-4 edit-profile-container">
               <div class="edit-profile">
-                <button class="btn btn-secondary">Edit Profile</button>
+                <button class="btn btn-secondary edit-profile-btn">
+                  Edit Profile
+                </button>
               </div>
             </div>
           </div>
@@ -185,6 +187,13 @@
           <li class="nav-item not-active-item">
             <a class="nav-link text-dark" href="{% url 'videos' id=user.id %}"
               >Videos</a
+            >
+          </li>
+          <li class="nav-item not-active-item">
+            <a
+              class="nav-link text-dark"
+              href="{% url 'savedposts' id=user.id %}"
+              >Saved</a
             >
           </li>
         </ul>
@@ -236,6 +245,55 @@
       </div>
     </div>
     <div class="footer mt-5"></div>
+    <div class="body-wrapper-two-edit-profile">
+      <div
+        class="post-upload-container-edit-profile body-wrapper-two-profile-page-edit-profile bg-white p-3 rounded shadow"
+      >
+        <div
+          class="post-upload-header d-flex justify-content-between align-items-center"
+        >
+          <div></div>
+          <div><h4>Upload</h4></div>
+          <div>
+            <i class="fa-solid fa-xmark fs-4 close-post-upload-edit"></i>
+          </div>
+        </div>
+        <div><hr /></div>
+
+        <form
+          action="{% url 'editprofile' page='profile' %}"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          {% csrf_token %}
+
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">Profile Picture</p>
+            <input
+              type="file"
+              class="form-control"
+              name="profilepicture"
+              id="imageInput"
+              accept="image/*"
+            />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">Cover Picture</p>
+            <input
+              type="file"
+              class="form-control"
+              name="coverpicture"
+              id="imageInput"
+              accept="image/*"
+            />
+          </div>
+
+          <div class="mt-4 w-100">
+            <button class="btn btn-success w-100">Upload</button>
+          </div>
+        </form>
+      </div>
+    </div>
     <script>
       let csrf_token = "{{csrf_token}}";
     </script>

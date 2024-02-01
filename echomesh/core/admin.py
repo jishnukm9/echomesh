@@ -10,5 +10,6 @@ admin.site.register(Like)
 admin.site.register(Save)
 admin.site.register(Share)
 admin.site.register(Friendship)
+admin.site.register(Ad)
 
 
