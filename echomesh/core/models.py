@@ -154,6 +154,7 @@ class Friendship(models.Model):
     receiver = models.ForeignKey(User, related_name='friendship_receiver', on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     last_modified_at = models.DateTimeField(auto_now_add=True)
+    code=models.CharField(max_length=500,default=None,null=True,blank=True)
     FRIENDS='Friends'
     PENDING='Pending'
     STATUS_CHOICES=[
@@ -169,6 +170,14 @@ class Friendship(models.Model):
         return f"{self.sender} -> {self.receiver}"
     
 
+class UniqueIdGenerator(models.Model):
+    model = models.CharField(max_length=200,unique=True)
+    prefix =models.CharField(max_length=200,unique=True)
+    uniqueid =models.IntegerField()
+
+    def __str__(self):
+        return self.model
+        
 
 class Ad(models.Model):
     image=models.URLField(max_length=500)

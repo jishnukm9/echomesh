@@ -34,32 +34,6 @@ function enableScroll() {
   });
 }
 
-function enableScrollPostDetails() {
-  var myScrollableDiv = document.getElementById("post-details-scroll-div");
-
-  myScrollableDiv.removeEventListener("wheel", preventScroll, {
-    passive: false,
-  });
-  myScrollableDiv.removeEventListener("touchmove", preventScroll, {
-    passive: false,
-  });
-  myScrollableDiv.removeEventListener("keydown", function (e) {
-    if (
-      [
-        "ArrowUp",
-        "ArrowDown",
-        "Space",
-        "PageUp",
-        "PageDown",
-        "Home",
-        "End",
-      ].indexOf(e.code) > -1
-    ) {
-      e.preventDefault();
-    }
-  });
-}
-
 // Logout dropdown
 document.addEventListener("DOMContentLoaded", function () {
   const profileBtn = document.querySelector(".profile-btn");
@@ -79,8 +53,6 @@ document.addEventListener("DOMContentLoaded", function () {
     ".close-registration-form"
   );
   createAccountBtn.addEventListener("click", function (e) {
-    // e.preventDefault();
-    // alert("clicked");
     bodyWrapper.style.display = "block";
   });
 
@@ -92,47 +64,90 @@ document.addEventListener("DOMContentLoaded", function () {
 // body transparent for post upload form
 document.addEventListener("DOMContentLoaded", function () {
   const fileUploadBtn = document.querySelector("#whats-on-mind");
+  const page = fileUploadBtn.dataset.page;
+
   const bodyWrapper = document.querySelector(".body-wrapper-two");
+  const postUploadContainer = document.querySelector(".post-upload-container");
 
   const closeFileUploadBtn = document.querySelector(".close-post-upload");
   fileUploadBtn.addEventListener("click", function (e) {
     var scrollY = window.scrollY || window.pageYOffset;
     var scrollX = window.scrollX || window.pageXOffset;
-    bodyWrapper.style.top = scrollY - 20 + "px"; // 50 is an arbitrary value for some offset from the top
-    bodyWrapper.style.left = scrollX + "px"; // Adjust as needed
+    // bodyWrapper.style.top = scrollY - 20 + "px";
+
+    let bodyHeight = document.body.scrollHeight;
+    console.log("Body height:", bodyHeight);
+    bodyWrapper.style.height = bodyHeight + "px";
+    bodyWrapper.style.left = scrollX + "px";
     bodyWrapper.style.display = "block";
     bodyWrapper.style.zIndex = "10000";
 
-    // document.documentElement.style.overflowY = "hidden";
-    disableScroll();
+    if (page == "profile") {
+      postUploadContainer.style.top = scrollY + 350 + "px";
+    } else {
+      postUploadContainer.style.top = scrollY + 250 + "px";
+    }
+
+    // disableScroll();
   });
 
   closeFileUploadBtn.addEventListener("click", function () {
     bodyWrapper.style.display = "none";
-    // document.documentElement.style.overflowY = "scroll";
-    enableScroll();
+
+    // enableScroll();
   });
 });
 
 // video/image/feeling upload form pop up
 document.addEventListener("DOMContentLoaded", function () {
   const videoUploadPopBtn = document.querySelectorAll(".video-upload-pop");
+  let page;
+  try {
+    const videobtn = document.querySelector(".video-upload-pop-profile");
+    videobtn.addEventListener("click", function () {
+      page = videobtn.dataset.page;
+    });
+  } catch {
+    page = null;
+  }
+
   const imageUploadPopBtn = document.querySelectorAll(".image-upload-pop");
+  let page2;
+  try {
+    const imgbtn = document.querySelector(".image-upload-pop-profile");
+    imgbtn.addEventListener("click", function () {
+      page2 = imgbtn.dataset.page;
+    });
+  } catch {
+    page2 = null;
+  }
+  console.log("page-", page, page2);
   const feelingUploadPopBtn = document.querySelector(".feeling-upload-pop");
   const bodyWrapper = document.querySelector(".body-wrapper-two");
   const fileInputImage = document.querySelector(".file-upload-inp-image");
   const fileInputVideo = document.querySelector(".file-upload-inp-video");
-
+  const postUploadContainer = document.querySelector(".post-upload-container");
   videoUploadPopBtn.forEach((elem) => {
     elem.addEventListener("click", function (e) {
       console.log("clicked");
+
       var scrollY = window.scrollY || window.pageYOffset;
       var scrollX = window.scrollX || window.pageXOffset;
-      bodyWrapper.style.top = scrollY - 20 + "px"; // 50 is an arbitrary value for some offset from the top
-      bodyWrapper.style.left = scrollX + "px"; // Adjust as needed
+
+      let bodyHeight = document.body.scrollHeight;
+      console.log("Body height:", bodyHeight);
+      bodyWrapper.style.height = bodyHeight + "px";
+      bodyWrapper.style.left = scrollX + "px";
       bodyWrapper.style.display = "block";
       bodyWrapper.style.zIndex = "10000";
-      disableScroll();
+
+      if ((page == "profile") | (page2 == "profile")) {
+        postUploadContainer.style.top = scrollY + 385 + "px";
+      } else {
+        postUploadContainer.style.top = scrollY + 250 + "px";
+      }
+
+      // disableScroll();
 
       if (fileInputImage.classList.contains("file-upload-inp-show")) {
         fileInputImage.classList.remove("file-upload-inp-show");
@@ -145,12 +160,22 @@ document.addEventListener("DOMContentLoaded", function () {
     elem.addEventListener("click", function (e) {
       var scrollY = window.scrollY || window.pageYOffset;
       var scrollX = window.scrollX || window.pageXOffset;
-      bodyWrapper.style.top = scrollY - 20 + "px"; // 50 is an arbitrary value for some offset from the top
-      bodyWrapper.style.left = scrollX + "px"; // Adjust as needed
+      // bodyWrapper.style.top = scrollY - 20 + "px";
+
+      let bodyHeight = document.body.scrollHeight;
+      console.log("Body height:", bodyHeight);
+      bodyWrapper.style.height = bodyHeight + "px";
+      bodyWrapper.style.left = scrollX + "px";
       bodyWrapper.style.display = "block";
       bodyWrapper.style.zIndex = "10000";
 
-      disableScroll();
+      if ((page == "profile") | (page2 == "profile")) {
+        postUploadContainer.style.top = scrollY + 385 + "px";
+      } else {
+        postUploadContainer.style.top = scrollY + 250 + "px";
+      }
+
+      // disableScroll();
 
       if (fileInputVideo.classList.contains("file-upload-inp-show")) {
         fileInputVideo.classList.remove("file-upload-inp-show");
@@ -171,15 +196,12 @@ document.addEventListener("DOMContentLoaded", function () {
       fileInputVideo.classList.remove("file-upload-inp-show");
     }
     fileInputImage.classList.toggle("file-upload-inp-show");
-    // if (fileInputVideo.contains(''))
-    // fileInputVideo.style.display = "none";
   });
   videoBtn.addEventListener("click", function () {
     if (fileInputImage.classList.contains("file-upload-inp-show")) {
       fileInputImage.classList.remove("file-upload-inp-show");
     }
     fileInputVideo.classList.toggle("file-upload-inp-show");
-    // fileInputImage.style.display = "none";
   });
 });
 
@@ -406,41 +428,35 @@ document.addEventListener("DOMContentLoaded", function () {
   const bodyWrapper = document.querySelector(".body-wrapper-two-edit-profile");
   const editBtn = document.querySelector(".edit-profile-btn");
   const closeBtn = document.querySelector(".close-post-upload-edit");
+  const postUploadContainer = document.querySelector(
+    ".post-upload-container-edit-profile"
+  );
   editBtn.addEventListener("click", function (e) {
     var scrollY = window.scrollY || window.pageYOffset;
     var scrollX = window.scrollX || window.pageXOffset;
-    bodyWrapper.style.top = scrollY - 20 + "px"; // 50 is an arbitrary value for some offset from the top
-    bodyWrapper.style.left = scrollX + "px"; // Adjust as needed
+    // bodyWrapper.style.top = scrollY - 20 + "px";
+
+    let bodyHeight = document.body.scrollHeight;
+
+    bodyWrapper.style.height = bodyHeight + "px";
+    bodyWrapper.style.left = scrollX + "px";
     bodyWrapper.style.display = "block";
     bodyWrapper.style.zIndex = "10000";
 
-    disableScroll();
+    postUploadContainer.style.top = scrollY + 260 + "px";
+
+    // disableScroll();
   });
   closeBtn.addEventListener("click", function (e) {
     // Set the position of the pop-up
 
     bodyWrapper.style.display = "none";
 
-    enableScroll();
+    // enableScroll();
   });
 });
 
 // opening and closing of save post button
-
-// document.addEventListener("DOMContentLoaded", function () {
-//   const threeDot = document.querySelectorAll(".post-three-dot");
-//   const body = this.documentElement.querySelector("body");
-//   threeDot.forEach((elem) => {
-//     elem.addEventListener("click", function (e) {
-//       const saveElem = elem.nextElementSibling;
-//       saveElem.classList.toggle("save-container-display-none");
-//       body.addEventListener("click", function (e) {
-//         if (e.target != elem)
-//           saveElem.classList.add("save-container-display-none");
-//       });
-//     });
-//   });
-// });
 
 // Saving and Unsaving a post
 
@@ -756,18 +772,40 @@ const getPost = function (postId) {
 
 document.addEventListener("DOMContentLoaded", function () {
   const commentBtn = document.querySelectorAll(".post-comment-btn");
-  const commentWrapper = document.querySelector(".body-wrapper-comment");
+  let page;
+
+  const bodyWrapper = document.querySelector(".body-wrapper-comment");
+
+  const postUploadContainer = document.querySelector(".post-comment-container");
+
   commentBtn.forEach((elem) => {
     elem.addEventListener("click", function (e) {
+      try {
+        page = elem.dataset.page;
+        console.log("page-", page);
+      } catch {
+        page = null;
+      }
       var scrollY = window.scrollY || window.pageYOffset;
       var scrollX = window.scrollX || window.pageXOffset;
-      // Set the position of the pop-up
-      commentWrapper.style.top = scrollY - 20 + "px"; // 50 is an arbitrary value for some offset from the top
-      commentWrapper.style.left = scrollX + "px"; // Adjust as needed
-      commentWrapper.style.display = "block";
-      commentWrapper.style.zIndex = "10000";
-      disableScroll();
-      // enableScrollPostDetails();
+      // bodyWrapper.style.top = scrollY - 20 + "px";
+
+      let bodyHeight = document.body.scrollHeight;
+      console.log("Body height:", bodyHeight);
+      bodyWrapper.style.height = bodyHeight + "px";
+      bodyWrapper.style.left = scrollX + "px";
+      bodyWrapper.style.display = "block";
+      bodyWrapper.style.zIndex = "10000";
+
+      if (page == "profile") {
+        postUploadContainer.style.top = scrollY + 350 + "px";
+      } else if (page == "saved") {
+        postUploadContainer.style.top = scrollY + 350 + "px";
+      } else {
+        postUploadContainer.style.top = scrollY + 250 + "px";
+      }
+      // disableScroll();
+
       const postId = elem.dataset.postId;
       document.querySelector("#getpostid").value = postId;
       getPost(postId);
@@ -775,7 +813,7 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   const close = document.querySelector(".close-post-comment");
   close.addEventListener("click", function () {
-    commentWrapper.style.display = "none";
+    bodyWrapper.style.display = "none";
 
     const postDetailsContainer = document.querySelector(
       ".post-details-container"
@@ -859,5 +897,48 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch((error) => {
         console.error("Error:", error);
       });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const online = document.querySelectorAll(".person-online");
+  online.forEach((elem) => {
+    elem.addEventListener("click", function () {
+      const roomName = this.dataset.frcode;
+      console.log(roomName);
+
+      const chatSocket = new WebSocket(
+        "ws://" + window.location.host + "/ws/notification/" + roomName + "/"
+      );
+
+      chatSocket.onmessage = function (e) {
+        const data = JSON.parse(e.data);
+
+        console.log("Data:", data);
+
+        if (data.type === "chat") {
+          alert(data.message);
+          // let messages = document.getElementById("messages");
+          // messages.insertAdjacentHTML(
+          //   "beforeend",
+          //   `<div>
+          //                               <p>${data.message}</p>
+          //                           </div>`
+          // );
+        }
+      };
+
+      // let form = document.getElementById("form");
+      // form.addEventListener("submit", (e) => {
+      //   e.preventDefault();
+      //   let message = e.target.message.value;
+      //   chatSocket.send(
+      //     JSON.stringify({
+      //       message: message,
+      //     })
+      //   );
+      //   form.reset();
+      // });
+    });
   });
 });

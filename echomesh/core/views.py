@@ -18,6 +18,21 @@ from datetime import datetime
 
 
 
+def generate_unique_id(modal_name,string_name):
+    id_obj = UniqueIdGenerator.objects.filter(model=modal_name).first()
+    if id_obj:
+        unique_id = f"{id_obj.prefix}{id_obj.uniqueid+1}"
+        id_obj.uniqueid=id_obj.uniqueid+1
+        id_obj.save()
+    else:
+        id_obj =UniqueIdGenerator()
+        id_obj.model =modal_name
+        id_obj.prefix=string_name
+        id_obj.uniqueid=1
+        id_obj.save()
+        unique_id = f"{string_name}{1}"
+    return unique_id
+
 
 def login(request):
     if request.method =='POST':
@@ -169,7 +184,13 @@ def check_post_activity(post_obj,current_user):
 
 
 
+def sort_onlinefriends(usr):
+        print(usr)
+        if usr['user'].userprofile.online:
 
+            return True
+        else:
+            return False
 
 # @login_required
 def home(request):
@@ -186,12 +207,26 @@ def home(request):
 
 
 
-    online_friends = [usr for obj in all_friends if (usr := User.objects.filter(id=obj).first()) and usr != user]
+    online_friends =[]
+   
+   
+    for usr in all_friends:
+        usr = User.objects.filter(id=usr).first()
+        if usr != user:
+            online_friends.append({"user":usr,"friendship":Friendship.objects.filter(Q(sender=usr)|Q(receiver=usr)).first()})
+             
+   
+   
+   
+   
     print("online friends", online_friends)
+
+    
+
 
     online_friends_sorted = sorted(
         online_friends,
-        key=lambda usr: usr.userprofile.online if usr.userprofile else False,
+        key=sort_onlinefriends,
         reverse=True
     )
 
@@ -199,7 +234,7 @@ def home(request):
     
     post_obj_final = list(map(partial(check_post_activity, current_user=user), posts_obj))
     post_count=len(posts_obj)
-    online_friends_sorted_ids = [user.id for user in online_friends_sorted]
+    online_friends_sorted_ids = [user['user'].id for user in online_friends_sorted]
     friend_suggestions = User.objects.exclude(pk=user.id).exclude(pk__in=online_friends_sorted_ids)
 
     if len(friend_suggestions)!=0:
@@ -414,6 +449,7 @@ def addfriend(request,receiver):
     friend_obj.sender=sender_obj
     friend_obj.receiver=receiver_obj
     friend_obj.status='Pending'
+    friend_obj.code=generate_unique_id("Friendship","FR")
     friend_obj.save()
     return redirect(reverse('profile',kwargs={"id":receiver}))
 
@@ -825,3 +861,8 @@ def addcomment(request):
     resp['Details']=get_comment_details(post_id)
     
     return JsonResponse(resp)
+
+
+
+
+

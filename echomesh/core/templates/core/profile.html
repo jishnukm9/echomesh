@@ -230,6 +230,7 @@
               placeholder="What's on your mind {{user.first_name}}?"
               autocomplete="off"
               id="whats-on-mind"
+              data-page="profile"
             />
           </div>
 
@@ -238,19 +239,25 @@
               class="upload-btn d-flex justify-content-between align-items-center"
             >
               <div
-                class="video-up video-upload-pop d-flex align-items-center gap-2 px-4 py-2 rounded"
+                data-page="profile"
+                id="video-upload-pop"
+                class="video-up video-upload-pop video-upload-pop-profile d-flex align-items-center gap-2 px-4 py-2 rounded"
               >
                 <i class="fa-solid fa-video text-danger"></i>
                 <p class="align-items-center m-0">Video</p>
               </div>
               <div
-                class="img-up image-upload-pop d-flex align-items-center gap-2 px-4 py-2 rounded"
+                id="image-upload-pop"
+                data-page="profile"
+                class="img-up image-upload-pop image-upload-pop-profile d-flex align-items-center gap-2 px-4 py-2 rounded"
               >
                 <i class="fa-solid fa-image text-success"></i>
                 <p class="align-items-center m-0">Image</p>
               </div>
               <div
-                class="feeling-up feeling-upload-pop d-flex align-items-center gap-2 px-4 py-2 rounded"
+                id="feeling-upload-pop"
+                data-page="profile"
+                class="feeling-up feeling-upload-pop feeling-upload-pop-profile d-flex align-items-center gap-2 px-4 py-2 rounded"
               >
                 <i class="fa-regular fa-face-smile text-warning"></i>
                 <p class="align-items-center m-0">Feelings</p>
@@ -378,7 +385,8 @@
               <a
                 data-post-id="{{post.post.id}}"
                 data-user-id="{{user.id}}"
-                class="img-up post-comment-btn text-decoration-none fw-bold text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+                data-page="profile"
+                class="img-up post-comment-btn post-comment-btn-profile text-decoration-none fw-bold text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
               >
                 <i class="fa-regular fa-comment"></i>
                 <p class="align-items-center m-0">Comment</p>

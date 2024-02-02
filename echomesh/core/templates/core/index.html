@@ -236,19 +236,19 @@
                   class="upload-btn d-flex justify-content-between align-items-center"
                 >
                   <div
-                    class="video-up video-upload-pop d-flex align-items-center gap-2 px-4 py-2 rounded"
+                    class="video-up video-upload-pop video-upload-pop-home d-flex align-items-center gap-2 px-4 py-2 rounded"
                   >
                     <i class="fa-solid fa-video text-danger"></i>
                     <p class="align-items-center m-0">Video</p>
                   </div>
                   <div
-                    class="img-up image-upload-pop d-flex align-items-center gap-2 px-4 py-2 rounded"
+                    class="img-up image-upload-pop image-upload-pop-home d-flex align-items-center gap-2 px-4 py-2 rounded"
                   >
                     <i class="fa-solid fa-image text-success"></i>
                     <p class="align-items-center m-0">Image</p>
                   </div>
                   <div
-                    class="feeling-up feeling-upload-pop d-flex align-items-center gap-2 px-4 py-2 rounded"
+                    class="feeling-up feeling-upload-pop feeling-upload-pop-home d-flex align-items-center gap-2 px-4 py-2 rounded"
                   >
                     <i class="fa-regular fa-face-smile text-warning"></i>
                     <p class="align-items-center m-0">Feelings</p>
@@ -389,7 +389,8 @@
                   <a
                     data-post-id="{{post.post.id}}"
                     data-user-id="{{user.id}}"
-                    class="img-up post-comment-btn text-decoration-none fw-bold text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+                    data-page="home"
+                    class="img-up post-comment-btn post-comment-btn-home text-decoration-none fw-bold text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
                   >
                     <i class="fa-regular fa-comment"></i>
                     <p class="align-items-center m-0">Comment</p>
@@ -470,24 +471,28 @@
               <div class="contacts-online">
                 <ul class="contacts-online-list ps-0">
                   {% for usr in online_friends %}
-                  <li class="mb-0 person-online rounded">
+                  <li
+                    data-frcode="{{usr.friendship.code}}"
+                    class="mb-0 person-online rounded"
+                  >
                     <a
-                      href=""
                       class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
                     >
                       <div class="contacts-online-container">
                         <img
                           class="nav-link-custom border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
-                          src="{{usr.userprofile.profile_picture}}"
+                          src="{{usr.user.userprofile.profile_picture}}"
                           alt="profie image"
                         />
-                        {% if usr.userprofile.online == True %}
+                        {% if usr.user.userprofile.online == True %}
                         <div class="online-status online"></div>
                         {% else %}
                         <div class="online-status offline"></div>
                         {% endif %}
                       </div>
-                      <span> {{usr.first_name}} {{usr.last_name}}</span>
+                      <span>
+                        {{usr.user.first_name}} {{usr.user.last_name}}
+                      </span>
                     </a>
                   </li>
                   {% endfor %}
