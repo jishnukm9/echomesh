@@ -917,7 +917,6 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log("Data:", data);
 
         if (data.type === "chat") {
-          alert(data.message);
           // let messages = document.getElementById("messages");
           // messages.insertAdjacentHTML(
           //   "beforeend",
