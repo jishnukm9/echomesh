@@ -48,21 +48,22 @@
         <ul
           class="navbar-menu d-flex justify-content-between align-items-center gap-3 mt-3"
         >
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a
               href="#"
               class="nav-link-custom active p-3 rounded-circle d-flex align-items-center justify-content-center"
             >
               <i class="fa-solid fa-message"></i>
             </a>
-          </li>
-          <li class="nav-item">
+          </li> -->
+          <li class="nav-item notif-nav-item">
             <a
               href="#about"
               class="nav-link-custom active p-3 rounded-circle d-flex align-items-center justify-content-center"
             >
               <i class="fa-solid fa-bell"></i>
             </a>
+            <div class="notif-count">{{notification_count}}</div>
           </li>
           <li class="nav-item dropdown-profile">
             <a href="" class="profile-btn">
@@ -610,6 +611,25 @@
 
     <script>
       let csrf_token = "{{csrf_token}}";
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let roomName = "{{userid}}";
+        const chatSocket = new WebSocket(
+          "ws://" + window.location.host + "/ws/notification/" + roomName + "/"
+        );
+
+        chatSocket.onmessage = function (e) {
+          const data = JSON.parse(e.data);
+          console.log("data-", data);
+          if (data.type === "notification") {
+            const notificationCount = document.querySelector(".notif-count");
+            const count = parseInt(notificationCount.textContent) + 1;
+            console.log(count, "count");
+            document.querySelector(".notif-count").textContent = count;
+          }
+        };
+      });
     </script>
 
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>

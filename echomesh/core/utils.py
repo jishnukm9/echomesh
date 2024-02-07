@@ -1,5 +1,7 @@
 from .globalvars import custom_variables
 from publitio import PublitioAPI
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 def publitio_image_upload(bytedata=None,folder_id=None,title=None,description=None):
     context = custom_variables(None)
@@ -43,3 +45,22 @@ def publitio_video_upload(bytedata=None, folder_id=None, title=None, description
     except:
         response = {'file_url':"File upload is not successfull. Please try again"}
     return response
+
+
+
+
+
+
+def sendnotification(message,userid):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+    userid,
+    {
+        'type': 'notification_message',
+        'message': message
+    }
+    )
+    resp={
+        "Response":"success"
+    }
+    return resp

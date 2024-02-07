@@ -51,21 +51,23 @@
         <ul
           class="navbar-menu d-flex justify-content-between align-items-center gap-3 mt-3"
         >
-          <li class="nav-item">
+          <!-- <li class="nav-item">
             <a
               href="#"
               class="nav-link-custom active p-3 rounded-circle d-flex align-items-center justify-content-center"
             >
               <i class="fa-solid fa-message"></i>
             </a>
-          </li>
-          <li class="nav-item">
+            <div class="message-count">19</div>
+          </li> -->
+          <li class="nav-item notif-nav-item">
             <a
               href="#about"
               class="nav-link-custom active p-3 rounded-circle d-flex align-items-center justify-content-center"
             >
               <i class="fa-solid fa-bell"></i>
             </a>
+            <div class="notif-count">{{notification_count}}</div>
           </li>
           <li class="nav-item dropdown-profile">
             <a href="" class="profile-btn">
@@ -289,6 +291,20 @@
                   <div class="save-post-container">
                     <i class="fa-solid fa-ellipsis fs-4 post-three-dot"></i>
                     <div
+                      class="post-view-btn bg-white hide text-secondary border shadow rounded"
+                      style="position: absolute"
+                    >
+                      <ul class="m-0 p-0 py-1 px-2">
+                        <li>
+                          <a
+                            href="{% url 'postdetails' postid=post.post.id %}"
+                            class="text-decoration-none postview"
+                            >View</a
+                          >
+                        </li>
+                      </ul>
+                    </div>
+                    <div
                       class="save-container shadow rounded ps-1 pe-2 pt-2 pb-2 save-container-display-none"
                     ></div>
                   </div>
@@ -433,7 +449,7 @@
                 </div>
               </div>
 
-              <ul class="contacts-online-list ps-0">
+              <ul class="ads-list ps-0">
                 {% for ad in ads %}
                 <li class="mb-0 sponsered-ad rounded">
                   <a
@@ -472,11 +488,14 @@
                 <ul class="contacts-online-list ps-0">
                   {% for usr in online_friends %}
                   <li
-                    data-frcode="{{usr.friendship.code}}"
+                    data-userimg="{{usr.user.userprofile.profile_picture}}"
+                    data-username="{{usr.user.first_name}} {{usr.user.last_name}}"
+                    data-frcode="{{usr.friendship}}"
                     class="mb-0 person-online rounded"
                   >
                     <a
                       class="d-flex align-items-center gap-4 py-2 px-2 text-decoration-none text-dark"
+                      href="{% url 'chatroom' code=usr.friendship %}"
                     >
                       <div class="contacts-online-container">
                         <img
@@ -494,6 +513,40 @@
                         {{usr.user.first_name}} {{usr.user.last_name}}
                       </span>
                     </a>
+
+                    <!-- <div class="message-container shadow">
+                      <div
+                        class="message-header py-1 px-2 bg-white d-flex justify-content-between align-items-center"
+                      >
+                        <div class="d-flex align-items-center gap-2">
+                          <img
+                            class="chat-user-img border profile-pic-round rounded-circle d-flex align-items-center justify-content-center"
+                            src=""
+                            alt="profie image"
+                          />
+                          <p class="m-0 p-0 chat-username"></p>
+                        </div>
+                        <div class="chat-close-container">
+                          <i class="fa-solid fa-xmark fs-4 chat-close-btn"></i>
+                        </div>
+                      </div>
+                      <div class="message-body px-2 py-2 border">
+                        <ul class="messages-chats"></ul>
+                      </div>
+                      <div
+                        class="message-footer bg-white px-1 py-1 d-flex align-items-center gap-1"
+                      >
+                        <textarea
+                          class="form-control message-type"
+                          name=""
+                          id=""
+                          cols="30"
+                          rows="1"
+                          placeholder="Type Message."
+                        ></textarea>
+                        <div class="btn btn-success message-send">Send</div>
+                      </div>
+                    </div> -->
                   </li>
                   {% endfor %}
                 </ul>
@@ -511,7 +564,7 @@
                 </div>
               </div>
 
-              <ul class="contacts-online-list ps-0">
+              <ul class="groups-list ps-0">
                 <li class="mb-0 chat-groups rounded">
                   <a
                     href=""
@@ -653,11 +706,11 @@
               name=""
               cols="30"
               rows="2"
-              placeholder="Reply"
+              placeholder="Type Comment.."
               id="replytext"
             ></textarea>
             <div>
-              <button class="btn btn-success givereply">Reply</button>
+              <button class="btn btn-success givereply">Comment</button>
             </div>
           </div>
         </div>
@@ -668,18 +721,31 @@
       let csrf_token = "{{csrf_token}}";
     </script>
 
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let roomName = "{{userid}}";
+        const chatSocket = new WebSocket(
+          "ws://" + window.location.host + "/ws/notification/" + roomName + "/"
+        );
+
+        chatSocket.onmessage = function (e) {
+          const data = JSON.parse(e.data);
+          console.log("data-", data);
+          if (data.type === "notification") {
+            const notificationCount = document.querySelector(".notif-count");
+            const count = parseInt(notificationCount.textContent) + 1;
+            console.log(count, "count");
+            document.querySelector(".notif-count").textContent = count;
+          }
+        };
+      });
+    </script>
+
     <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'js/plyr.js' %}"></script>
 
     <script>
-      //   let count={{post_count}}
-      // for (let index = 1; index < parseInt(count)+1; index++) {
-      //   const player = new Plyr(`#player${index}`);
-      // }
-      // const player = new Plyr(`.player`);
       const playerElements = document.querySelectorAll(".player");
-
-      // Iterate through each player element and initialize Plyr
       playerElements.forEach(function (playerElement) {
         const player = new Plyr(playerElement);
       });

@@ -659,6 +659,7 @@ const getPost = function (postId) {
           </div>
         `;
         } else {
+          postData = "";
         }
 
         let comments = "";
@@ -901,43 +902,44 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-  const online = document.querySelectorAll(".person-online");
-  online.forEach((elem) => {
+  const threeDot = document.querySelectorAll(".post-three-dot");
+
+  threeDot.forEach((elem) => {
     elem.addEventListener("click", function () {
-      const roomName = this.dataset.frcode;
-      console.log(roomName);
+      const parentContainer = elem.closest(".save-post-container"); // Get the common parent
+      if (!parentContainer) return; // Early exit if not found
 
-      const chatSocket = new WebSocket(
-        "ws://" + window.location.host + "/ws/notification/" + roomName + "/"
-      );
+      const postViewBtn = parentContainer.querySelector(".post-view-btn"); // Find .post-view-btn within the parent
+      if (!postViewBtn) return; // Early exit if .post-view-btn not found within parent
 
-      chatSocket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
+      postViewBtn.classList.toggle("hide");
 
-        console.log("Data:", data);
+      postViewBtn.addEventListener("mouseenter", function () {
+        const postView = postViewBtn.querySelector(".postview");
+        postView.style.color = "#fff";
+      });
 
-        if (data.type === "chat") {
-          // let messages = document.getElementById("messages");
-          // messages.insertAdjacentHTML(
-          //   "beforeend",
-          //   `<div>
-          //                               <p>${data.message}</p>
-          //                           </div>`
-          // );
-        }
-      };
-
-      // let form = document.getElementById("form");
-      // form.addEventListener("submit", (e) => {
-      //   e.preventDefault();
-      //   let message = e.target.message.value;
-      //   chatSocket.send(
-      //     JSON.stringify({
-      //       message: message,
-      //     })
-      //   );
-      //   form.reset();
-      // });
+      postViewBtn.addEventListener("mouseleave", function () {
+        const postView = postViewBtn.querySelector(".postview"); // Make sure to re-query the postView inside this function
+        postView.style.color = "#444";
+      });
     });
   });
 });
+
+// document.addEventListener("DOMContentLoaded", function () {
+//   let roomName = roomname;
+//   const chatSocket = new WebSocket(
+//     "ws://" + window.location.host + "/ws/notification/" + roomName + "/"
+//   );
+
+//   chatSocket.onmessage = function (e) {
+//     const data = JSON.parse(e.data);
+
+//     if (data.type === "notification") {
+//       const notificationCount = document.querySelector(".notif-count");
+//       const count = parseInt(notificationCount.textContent) + 1;
+//       document.querySelector(".notif-count").textContent = count;
+//     }
+//   };
+// });

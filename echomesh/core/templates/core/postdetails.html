@@ -35,10 +35,10 @@
           class="tabs d-flex justify-content-between align-items-center gap-5 fs-4"
         >
           <a href="{% url 'home' %}"><i class="fa-solid fa-house-user"></i> </a>
-          <a href="{% url 'friends' id=user.id %}"
+          <a href="{% url 'friends' id=current_user.id %}"
             ><i class="fa-solid fa-users"></i
           ></a>
-          <a href="{% url 'profile' id=user.id %}" class="tab-active"
+          <a href="{% url 'profile' id=user.id %}"
             ><i class="fa-solid fa-user"></i
           ></a>
         </div>
@@ -105,7 +105,7 @@
       </div>
     </div>
 
-    <div class="profile-container bg-white">
+    <!-- <div class="profile-container bg-white">
       <div class="cover-pic-container-box">
         <div
           class="cover-pic-container"
@@ -165,11 +165,11 @@
       </div>
       <div class="profile-tabs">
         <ul class="nav nav-pills">
-          <li class="nav-item not-active-item">
+          <li class="nav-item">
             <a
-              class="nav-link text-dark"
+              class="nav-link active-tab text-blue"
               aria-current="page"
-              href="{% url 'profile' id=user.id %}"
+              href="#"
               >Posts</a
             >
           </li>
@@ -199,7 +199,9 @@
             >
           </li>
           <li class="nav-item not-active-item">
-            <a class="nav-link active-tab text-blue" href="#">Videos</a>
+            <a class="nav-link text-dark" href="{% url 'videos' id=user.id %}"
+              >Videos</a
+            >
           </li>
           <li class="nav-item not-active-item">
             <a
@@ -210,19 +212,47 @@
           </li>
         </ul>
       </div>
-    </div>
+    </div> -->
 
-    <div class="posts-container mt-3">
-      <div
-        class="middle-content-two mb-2 p-3 bg-white rounded d-flex justify-content-between"
-      >
-        <div><h6>Videos</h6></div>
-        <div></div>
-      </div>
-      {% for post in posts %}
+    <div class="post-details-container-post-details">
+      {% for post in post_details %}
 
       <div class="middle-content-two mb-2">
         <div class="middle-content-two-child rounded bg-white p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex gap-2">
+              <div>
+                <img
+                  class="nav-link-custom border profile-pic-round prof-pic rounded-circle d-flex align-items-center justify-content-center"
+                  src="{{post.user.userprofile.profile_picture}}"
+                  alt="profie image"
+                />
+              </div>
+              <div class="d-flex align-items-center justify-content-center">
+                <div>
+                  <p class="m-0">
+                    {{post.user.first_name}} {{post.user.last_name}}
+                  </p>
+                  <p class="m-0 time">{{post.post.created_at}}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3">
+              <div>
+                <i class="fa-solid fa-ellipsis fs-4 post-three-dot"></i>
+              </div>
+
+              <div>
+                <i class="fa-solid fa-xmark fs-4 post-close-btn"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="post-description">
+            <p class="post-description-font">{{post.post.text}}</p>
+          </div>
+
           {% if post.post.post_type == 'Image' %}
 
           <div class="post-image-container">
@@ -251,11 +281,183 @@
             </video>
           </div>
           {% endif %}
+
+          <div class="px-2 pt-3">
+            <div
+              class="like-comment-container d-flex justify-content-between align-items-center"
+            >
+              <div
+                class="like-count d-flex align-items-center gap-2 px-0 py-2 rounded"
+              >
+                <i class="fa-solid fa-thumbs-up text-blue"></i>
+                <p class="align-items-center likes-count m-0">
+                  <span class="like-count-integer">{{post.like_count}}</span>
+                  Likes
+                </p>
+              </div>
+
+              <div
+                class="comment-count d-flex align-items-center gap-2 px-0 py-2 rounded"
+              >
+                <i class="fa-solid fa-comment"></i>
+                <p class="align-items-center m-0">
+                  {{post.comment_count}} Comments
+                </p>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="px-5 pt-0">
+            <div
+              class="upload-btn d-flex justify-content-between align-items-center"
+            >
+              {% if post.current_user_liked == True %}
+              <a
+                data-post-id="{{post.post.id}}"
+                data-user-id="{{user.id}}"
+                class="video-up post-like-btn post-liked fw-bold text-decoration-none text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+              >
+                <i class="fa-regular fa-thumbs-up"></i>
+                <p class="align-items-center m-0">Like</p>
+              </a>
+              {% else %}
+              <a
+                data-post-id="{{post.post.id}}"
+                data-user-id="{{user.id}}"
+                class="video-up post-like-btn not-liked fw-bold text-decoration-none text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+              >
+                <i class="fa-regular fa-thumbs-up"></i>
+                <p class="align-items-center m-0">Like</p>
+              </a>
+              {% endif %}
+
+              <a
+                data-post-id="{{post.post.id}}"
+                data-user-id="{{user.id}}"
+                data-page="profile"
+                class="img-up post-comment-btn post-comment-btn-profile text-decoration-none fw-bold text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+              >
+                <i class="fa-regular fa-comment"></i>
+                <p class="align-items-center m-0">Comment</p>
+              </a>
+
+              {% if post.current_user_saved == True %}
+              <a
+                data-post-id="{{post.post.id}}"
+                data-user-id="{{user.id}}"
+                class="video-up save-post-btn post-saved fw-bold text-decoration-none text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+              >
+                <i class="fa-solid fa-bookmark"></i>
+                <p class="align-items-center m-0">Save</p>
+              </a>
+              {% else %}
+              <a
+                data-post-id="{{post.post.id}}"
+                data-user-id="{{user.id}}"
+                class="feeling-up save-post-btn not-saved text-decoration-none fw-bold text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+              >
+                <i class="fa-solid fa-bookmark"></i>
+                <p class="align-items-center m-0">Save</p>
+              </a>
+              {% endif %}
+            </div>
+          </div>
         </div>
       </div>
 
-      {% endfor %}
       <div class="footer mt-5"></div>
+
+      {% endfor %}
+    </div>
+
+    <!-- </div> -->
+    <div class="body-wrapper-two">
+      <div
+        class="post-upload-container body-wrapper-two-profile-page bg-white p-3 rounded shadow"
+      >
+        <div
+          class="post-upload-header d-flex justify-content-between align-items-center"
+        >
+          <div></div>
+          <div><h4>Create Post</h4></div>
+          <div>
+            <i class="fa-solid fa-xmark fs-4 close-post-upload"></i>
+          </div>
+        </div>
+        <div><hr /></div>
+        <div>
+          <div
+            class="d-flex align-items-center gap-2 py-2 px-2 text-decoration-none text-dark"
+          >
+            <img
+              class="nav-link-custom border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
+              src="{{user.userprofile.profile_picture}}"
+              alt="profie image"
+            /><span>{{user.first_name}} {{user.last_name}}</span>
+          </div>
+        </div>
+        <form
+          action="{% url 'uploadpost' page='profile' %}"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          {% csrf_token %}
+          <div class="upload-form-continer">
+            <textarea
+              name="text"
+              id=""
+              cols="30"
+              rows="10"
+              placeholder="What's on your mind {{user.first_name}}?"
+              class="form-control border ps-4"
+            ></textarea>
+          </div>
+
+          <div class="mt-2 file-upload-inp-image">
+            <input
+              type="file"
+              class="form-control"
+              name="image"
+              id="imageInput"
+              accept="image/*"
+            />
+            <input type="text" name="posttype" value="Image" hidden />
+          </div>
+          <div class="mt-2 file-upload-inp-video">
+            <input
+              type="file"
+              class="form-control"
+              name="video"
+              id="videoInput"
+              accept="video/*"
+            />
+            <input type="text" name="posttype" value="video" hidden />
+          </div>
+
+          <div
+            class="d-flex justify-content-between align-items-center border rounded px-3 py-3 mt-2"
+          >
+            <div><p class="m-0 p-0">Add to your post</p></div>
+            <div
+              class="d-flex align-items-center justify-content-between gap-4"
+            >
+              <div class="upload-icon upload-icon-image">
+                <i class="fa-solid fa-image text-success"></i>
+              </div>
+              <div class="upload-icon upload-icon-video">
+                <i class="fa-solid fa-video text-success"></i>
+              </div>
+              <div class="upload-icon upload-icon-feeling">
+                <i class="fa-regular fa-face-smile text-warning"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-2 w-100">
+            <button class="btn btn-success w-100">Post</button>
+          </div>
+        </form>
+      </div>
     </div>
 
     <div class="body-wrapper-two-edit-profile">
@@ -305,6 +507,53 @@
             <button class="btn btn-success w-100">Upload</button>
           </div>
         </form>
+      </div>
+    </div>
+
+    <div class="body-wrapper-comment">
+      <div class="post-comment-container bg-white p-3 rounded shadow mt-1">
+        <div
+          class="post-upload-header d-flex justify-content-between align-items-center"
+        >
+          <div></div>
+          <div><h4>Comment</h4></div>
+          <div>
+            <i class="fa-solid fa-xmark fs-4 close-post-comment"></i>
+          </div>
+        </div>
+        <div><hr /></div>
+        <div class="post-details-scroll-div" id="post-details-scroll-div">
+          <div
+            class="d-flex post-details-container align-items-center gap-2 py-2 px-2 text-decoration-none text-dark"
+          ></div>
+
+          <div class="comment-section px-2"></div>
+        </div>
+        <div
+          class="post-details-footer d-flex justify-content-between align-items-center px-4 pt-4 pb-2"
+        >
+          <div class="d-flex justify-content-between w-100 gap-2">
+            <div>
+              <img
+                class="nav-link-custom border profile-pic-round-small rounded-circle d-flex align-items-center justify-content-center"
+                src=""
+                alt="profie image"
+              />
+            </div>
+            <input type="text" id="getpostid" value="" hidden />
+            <textarea
+              class="form-control"
+              name=""
+              cols="30"
+              rows="2"
+              placeholder="Reply"
+              id="replytext"
+            ></textarea>
+            <div>
+              <button class="btn btn-success givereply">Reply</button>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 

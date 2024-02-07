@@ -1,12 +1,9 @@
-from django.db import models
-from django.contrib.auth.models import User
-# Create your models here.
-
-
-
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from .utils import sendnotification
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE,related_name="userprofile")
@@ -189,4 +186,40 @@ class Ad(models.Model):
         return self.company
 
 
+
+class ChatDetails(models.Model):
+    message=models.TextField()
+    roomname=models.CharField(max_length=200)
+    userid=models.IntegerField()
+    userimage=models.URLField(max_length=2000)
+    userfullname=models.CharField(max_length=200)
+    created_at=models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.roomname
+
+
+class BroadcastNotification(models.Model):
+    message = models.TextField()
+    sent = models.BooleanField(default=False)
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name='broadcast_notifications')
+    created_date = models.DateTimeField(auto_now_add=True)
+    notification_type = models.CharField(max_length=50,null=True,default=None)
+    notification_id =models.CharField(max_length=50,null=True,default=None)
+    seen = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.notification_type
+
+@receiver(post_save, sender=BroadcastNotification)
+def notification_handler(sender, instance, created, **kwargs):
+    # call group_send function directly to send notificatoions or you can create a dynamic task in celery beat
+    if created:
+        sendnotification(instance.message,str(instance.user.id))
+
+    #if not created:
+    
+
+
+    
 

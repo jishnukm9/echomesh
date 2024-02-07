@@ -18,6 +18,7 @@ from datetime import datetime
 
 
 
+
 def generate_unique_id(modal_name,string_name):
     id_obj = UniqueIdGenerator.objects.filter(model=modal_name).first()
     if id_obj:
@@ -38,9 +39,9 @@ def login(request):
     if request.method =='POST':
         username=request.POST['username']
         password=request.POST['password']
-        print("username",username,"password",password)
+    
         user = authenticate(username=username, password=password)
-        print("user",user)
+    
         if user is not None:
             auth_login(request,user)
             user_obj= UserProfile.objects.filter(user=User.objects.filter(id=user.id).first()).first()
@@ -92,8 +93,7 @@ def registration_view(request):
         userprofile.dob=date_object
         userprofile.save()
 
-        print("userprofile=",userprofile)
-        print("userprofile above")
+ 
         auth_login(request,user)
         return redirect('home')
     except IntegrityError as e:
@@ -185,7 +185,7 @@ def check_post_activity(post_obj,current_user):
 
 
 def sort_onlinefriends(usr):
-        print(usr)
+     
         if usr['user'].userprofile.online:
 
             return True
@@ -213,13 +213,13 @@ def home(request):
     for usr in all_friends:
         usr = User.objects.filter(id=usr).first()
         if usr != user:
-            online_friends.append({"user":usr,"friendship":Friendship.objects.filter(Q(sender=usr)|Q(receiver=usr)).first()})
+            online_friends.append({"user":usr,"friendship":Friendship.objects.filter((Q(sender=usr)&Q(receiver=user))|(Q(sender=user)&Q(receiver=usr))).first().code})
              
    
    
    
    
-    print("online friends", online_friends)
+
 
     
 
@@ -247,12 +247,16 @@ def home(request):
         friend_suggestions = []
 
     ads =Ad.objects.all().order_by("?")[::2]
+
+    notification_count = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False)).count()
     context={'posts':post_obj_final,
     "user":user,
     "post_count":post_count,
     "friend_suggestions":friend_suggestions,
     "online_friends":online_friends_sorted,
-    "ads":ads}
+    "ads":ads,
+    "userid":request.user.id,
+    "notification_count":notification_count}
 
     return render(request,'core/index.html',context)
 
@@ -270,6 +274,14 @@ def like_post(request):
         like_obj.post = Post.objects.filter(id=post_id).first()
         like_obj.user = user
         like_obj.save()
+
+        notification =BroadcastNotification()
+        notification.message = f"{user.first_name} {user.last_name} liked your post"
+        notification.user=Post.objects.filter(id=post_id).first().user
+        notification.notification_type = 'like'
+        notification.notification_id = post_id
+        notification.save()
+
     except:
         resp={'Response':"Error"}
     return JsonResponse(resp)
@@ -372,7 +384,7 @@ def profile(request,id):
     post_obj_final = list(map(partial(check_post_activity, current_user=user), posts_obj))
     post_count=len(posts_obj)
 
-
+    notification_count = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False)).count()
     context={'posts':post_obj_final,
     "user":user,
     "post_count":post_count,
@@ -380,6 +392,8 @@ def profile(request,id):
     "current_user":current_user,
     "is_current_user":is_current_user,
     "request_status":request_status,
+    "userid":request.user.id,
+    "notification_count":notification_count
     }
 
     return render(request,"core/profile.html",context)
@@ -411,7 +425,7 @@ def saved_posts(request,id):
         request_status='Not Friend'
    
     posts =[Post.objects.filter(id=objs).first() for objs in list(chain(*Save.objects.filter(user=user).values_list('post')))]
-    print("posts=",posts)
+ 
     posts_obj = sorted(posts, key=lambda x: x.created_at, reverse=True)
 
 
@@ -425,7 +439,7 @@ def saved_posts(request,id):
     post_obj_final = list(map(partial(check_post_activity, current_user=user), posts_obj))
     post_count=len(posts_obj)
 
-
+    notification_count = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False)).count()
     context={'posts':post_obj_final,
     "user":user,
     "post_count":post_count,
@@ -433,6 +447,8 @@ def saved_posts(request,id):
     "current_user":current_user,
     "is_current_user":is_current_user,
     "request_status":request_status,
+    "userid":request.user.id,
+    "notification_count":notification_count
     }
 
     return render(request,"core/saved.html",context)
@@ -474,13 +490,15 @@ def friend_request(request):
     req_obj=Friendship.objects.filter(Q(receiver=user)&Q(status='Pending'))
     req_senders = [friendship.sender for friendship in req_obj]
 
-    print("req",req_senders)
+    notification_count = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False)).count()
     context={
     "user":user,
     "current_user":user,
     "friends_count":friends_count,
     'friend_requests':req_senders ,
     'is_current_user':True,
+    "userid":request.user.id,
+    "notification_count":notification_count
     }
 
     return render(request,"core/friendrequests.html",context)
@@ -519,13 +537,15 @@ def friends(request,id):
 
 
 
-
+    notification_count = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False)).count()
     context={
     "user":user,
     "friends_count":friends_count,
     'current_user':current_user,
     "all_friends":online_friends,
     "is_current_user":is_current_user,
+    "userid":request.user.id,
+    "notification_count":notification_count
     }
 
     return render(request,"core/friends.html",context)
@@ -582,7 +602,7 @@ def photos(request,id):
     post_obj_final = list(map(partial(check_post_activity, current_user=user), posts_obj))
     post_count=len(posts_obj)
 
-
+    notification_count = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False)).count()
     context={'posts':post_obj_final,
     "user":user,
     "post_count":post_count,
@@ -590,6 +610,8 @@ def photos(request,id):
     "current_user":current_user,
     "is_current_user":is_current_user,
     "request_status":request_status,
+    "userid":request.user.id,
+    "notification_count":notification_count
     }
 
     return render(request,"core/photos.html",context)
@@ -630,7 +652,7 @@ def videos(request,id):
     post_obj_final = list(map(partial(check_post_activity, current_user=user), posts_obj))
     post_count=len(posts_obj)
 
-    print("videos-",post_count)
+    notification_count = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False)).count()
     context={'posts':post_obj_final,
     "user":user,
     "post_count":post_count,
@@ -638,6 +660,8 @@ def videos(request,id):
     "current_user":current_user,
     "is_current_user":is_current_user,
     "request_status":request_status,
+    "userid":request.user.id,
+    "notification_count":notification_count
     }
 
     return render(request,"core/videos.html",context)
@@ -668,13 +692,15 @@ def about(request,id):
 
 
 
-
+    notification_count = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False)).count()
     context={
     "user":user,
     "friends_count":friends_count,
     'current_user':current_user,
     "all_friends":online_friends,
     "is_current_user":is_current_user,
+    "userid":request.user.id,
+    "notification_count":notification_count
     }
 
     return render(request,"core/about.html",context)
@@ -742,6 +768,14 @@ def save_post(request):
         save_obj.user=user
         save_obj.post=Post.objects.filter(id=post_id).first()
         save_obj.save()
+
+
+        notification =BroadcastNotification()
+        notification.message = f"{user.first_name} {user.last_name} Saved your post"
+        notification.user=Post.objects.filter(id=post_id).first().user
+        notification.notification_type = 'save'
+        notification.notification_id = post_id
+        notification.save()
     except:
         resp={'Response':"Error"}
     return JsonResponse(resp)
@@ -833,7 +867,7 @@ def get_post(request):
 
     resp={"Response":"Success",
           "Details":data}
-    print(resp)
+
     return JsonResponse(resp)
 
 
@@ -854,6 +888,14 @@ def addcomment(request):
     comment.comment=post_text
     comment.save()
 
+
+    notification =BroadcastNotification()
+    notification.message = f"{current_user.first_name} {current_user.last_name} Commented on your post"
+    notification.user=Post.objects.filter(id=post_id).first().user
+    notification.notification_type = 'comment'
+    notification.notification_id = post_id
+    notification.save()
+
     
 
 
@@ -863,6 +905,99 @@ def addcomment(request):
     return JsonResponse(resp)
 
 
+
+
+
+
+def chatroom(request,code):
+
+    current_user=request.user
+    friendship = Friendship.objects.filter(code=code).first()
+    oposite_person = friendship.sender if friendship.receiver == current_user else friendship.receiver
+
+    all_chats = ChatDetails.objects.filter(roomname=code)
+    notification_count = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False)).count()
+    context={
+        "roomname":code,
+        "user":request.user,
+        "friendship":friendship,
+        "opposite_person":oposite_person,
+        "image":request.user.userprofile.profile_picture,
+        "userid":request.user.id,
+        "fullname":f"{request.user.first_name} {request.user.last_name}",
+        "all_chats":all_chats,
+        "userid":request.user.id,
+        "notification_count":notification_count
+    }
+
+    return render(request,'core/chatroom.html',context)
+
+
+
+
+
+
+def savechat(request):
+    current_user=request.user
+    request_body= QueryDict(request.body)
+    json_data = json.loads(list(request_body.keys())[0]) 
+    message=json_data.get('message')
+    userid=json_data.get('userid')
+    roomname=json_data.get('roomname')
+    userimage=json_data.get('userimage')
+    userfullname=json_data.get('userfullname') 
+
+    friendship = Friendship.objects.filter(code=roomname).first()
+
+    chat=ChatDetails()
+    chat.message=message
+    chat.roomname=roomname
+    chat.userid=userid
+    chat.userimage=userimage
+    chat.userfullname=userfullname
+    chat.save()
+
+    person = friendship.sender if friendship.receiver == current_user else friendship.receiver
+
+    notification =BroadcastNotification()
+    notification.message = f"{current_user.first_name} {current_user.last_name} Commented on your post"
+    notification.user=person
+    notification.notification_type = 'message'
+    notification.notification_id = roomname
+    notification.save()
+
+
+    resp={
+        "Response":"Success"
+    }
+
+    return JsonResponse(resp)
+
+
+
+
+def postdetails(request,postid):
+    user=request.user
+    post_details  =Post.objects.filter(id=postid)
+
+
+    post_obj_final = list(map(partial(check_post_activity, current_user=user), post_details))
+
+    notification_count = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False)).count()
+    context={
+        "post_details":post_obj_final,
+        "current_user":user,
+        "userid":request.user.id,
+        "notification_count":notification_count
+    }
+    return render(request,"core/postdetails.html",context)
+
+
+
+
+
+
+    
 
 
 

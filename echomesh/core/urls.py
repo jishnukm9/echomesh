@@ -25,4 +25,7 @@ urlpatterns = [
     path('savedposts/<id>/',views.saved_posts,name='savedposts'),
     path('get-post/',views.get_post,name='getpost'),
     path('add-comment/',views.addcomment,name='addcomment'),
+    path('chatroom/<code>/',views.chatroom,name='chatroom'),
+     path('savechat/',views.savechat,name='savechat'),
+     path('postdetails/<postid>/',views.postdetails,name='postdetails'),
 ]
