@@ -85,11 +85,11 @@ def registration_view(request):
         user = User.objects.create_user(username=username,password=password,email=email,first_name=firstname,last_name=lastname)
         userprofile= UserProfile()
         userprofile.user=user
-        userprofile.cover_picture='https://media.publit.io/file/echocp/defaultcover.jpg'
+        userprofile.cover_picture='https://images2.imgbox.com/85/6f/d1Jgyuxb_o.jpg'
         if gender == 'Male':
-            userprofile.profile_picture='https://media.publit.io/file/echopp/man-4140048.png'
+            userprofile.profile_picture='https://images2.imgbox.com/de/5b/CUw5uxVc_o.png'
         else:
-                userprofile.profile_picture='https://media.publit.io/file/echopp/woman-4140047.png'
+            userprofile.profile_picture='https://images2.imgbox.com/a8/7a/0pvvdaxt_o.png'
         userprofile.dob=date_object
         userprofile.save()
 
@@ -205,7 +205,7 @@ def home(request):
 
     posts_obj = sorted(Post.objects.filter(user__in=all_friends), key=lambda x: x.created_at, reverse=True)
 
-
+    print("all friends",all_friends)
 
     online_friends =[]
    
@@ -236,7 +236,7 @@ def home(request):
     post_count=len(posts_obj)
     online_friends_sorted_ids = [user['user'].id for user in online_friends_sorted]
     friend_suggestions = User.objects.exclude(pk=user.id).exclude(pk__in=online_friends_sorted_ids)
-
+    print("suggestions",friend_suggestions)
     if len(friend_suggestions)!=0:
         if len(friend_suggestions) > 1:
             # If there are more than one users other than the current user, shuffle them and take two entries
@@ -275,12 +275,14 @@ def like_post(request):
         like_obj.user = user
         like_obj.save()
 
-        notification =BroadcastNotification()
-        notification.message = f"{user.first_name} {user.last_name} liked your post"
-        notification.user=Post.objects.filter(id=post_id).first().user
-        notification.notification_type = 'like'
-        notification.notification_id = post_id
-        notification.save()
+        if Post.objects.filter(id=post_id).first().user != user:
+            notification =BroadcastNotification()
+            notification.message = f"{user.first_name} {user.last_name} liked your post"
+            notification.user=Post.objects.filter(id=post_id).first().user
+            notification.notification_type = 'like'
+            notification.notification_id = post_id
+            notification.from_user=request.user
+            notification.save()
 
     except:
         resp={'Response':"Error"}
@@ -315,13 +317,13 @@ def upload_post(request,page):
     post_type='Text'
     if image:
         post_type='Image'
-        image_resp =publitio_image_upload(bytedata=image,folder_id='jp2rRmM4',title=f"image post by {user.first_name}")
+        image_resp =publitio_image_upload(bytedata=image,title=f"image post by {user.first_name}")
         if image_resp['file_url']:
             if image_resp['file_url'] != 'File upload is not successfull. Please try again':
                 image_url = image_resp['file_url']
     elif video:
         post_type='Video'
-        video_resp =publitio_video_upload(bytedata=video,folder_id='XGBrb2Wd',title=f"video post by {user.first_name}")
+        video_resp =publitio_video_upload(bytedata=video,title=f"video post by {user.first_name}")
         if video_resp['file_url']:
             if video_resp['file_url'] != 'File upload is not successfull. Please try again':
                 video_url = video_resp['file_url']
@@ -467,6 +469,16 @@ def addfriend(request,receiver):
     friend_obj.status='Pending'
     friend_obj.code=generate_unique_id("Friendship","FR")
     friend_obj.save()
+
+    # if Post.objects.filter(id=post_id).first().user != user:
+    notification =BroadcastNotification()
+    notification.message = f"{sender_obj.first_name} {sender_obj.last_name} send you a friend request"
+    notification.user=receiver_obj
+    notification.notification_type = 'friendrequest'
+    notification.notification_id = receiver_obj.id
+    notification.from_user=sender_obj
+    notification.save()
+
     return redirect(reverse('profile',kwargs={"id":receiver}))
 
 
@@ -512,6 +524,16 @@ def accept_request(request,sender):
     req_obj=Friendship.objects.filter(Q(sender=sender_obj)&Q(receiver=receiver_obj)).first()
     req_obj.status='Friends'
     req_obj.save()
+
+
+    notification =BroadcastNotification()
+    notification.message = f"{receiver_obj.first_name} {receiver_obj.last_name} accepted your friend request"
+    notification.user=sender_obj
+    notification.notification_type = 'acceptrequest'
+    notification.notification_id = receiver_obj.id
+    notification.from_user=receiver_obj
+    notification.save()
+
 
     return redirect('friendrequest')
 
@@ -715,16 +737,27 @@ def edit_profile(request,page):
     try:
         pp=request.FILES.get('profilepicture')
         cp=request.FILES.get('coverpicture')
+        highschool=request.POST['highschool']
+        hpassed=request.POST['highschoolpassed']
+        college=request.POST['college']
+        cpassed=request.POST['collagepassed']
+        city=request.POST['city']
+        district=request.POST['district']
+        state=request.POST['state']
+        country=request.POST['country']
+        relationship=request.POST['relationship']
+        gender=request.POST['gender']
+        phone=request.POST['phone']
         user=request.user
         image_url1=None
         if pp:
-            image_resp =publitio_image_upload(bytedata=pp,folder_id='1J5Bel9l',title=f"profile picture by {user.first_name}")
+            image_resp =publitio_image_upload(bytedata=pp,title=f"profile picture by {user.first_name}")
             if image_resp['file_url']:
                 if image_resp['file_url'] != 'File upload is not successfull. Please try again':
                     image_url1 = image_resp['file_url']
         image_url2=None
         if cp:
-            image_resp =publitio_image_upload(bytedata=cp,folder_id='kQHy9jLN',title=f"cover picture by {user.first_name}")
+            image_resp =publitio_image_upload(bytedata=cp,title=f"cover picture by {user.first_name}")
             if image_resp['file_url']:
                 if image_resp['file_url'] != 'File upload is not successfull. Please try again':
                     image_url2 = image_resp['file_url']
@@ -734,6 +767,28 @@ def edit_profile(request,page):
             userprofile.profile_picture=image_url1
         if image_url2:
             userprofile.cover_picture=image_url2
+        if highschool:
+            userprofile.highschool=highschool
+        if hpassed:
+            userprofile.highschool_passed_year=hpassed
+        if college:
+            userprofile.college=college
+        if cpassed:
+            userprofile.college_passed_year=cpassed
+        if city:
+            userprofile.city=city
+        if district:
+            userprofile.district=district
+        if state:
+            userprofile.state=state
+        if phone:
+            userprofile.phone=phone
+        if country:
+            userprofile.country=country
+        if relationship:
+            userprofile.relationship_status=relationship
+        if gender:
+            userprofile.gender=gender
         userprofile.save()
     except:
         messages.error(request, "An Error Occured.")
@@ -769,13 +824,14 @@ def save_post(request):
         save_obj.post=Post.objects.filter(id=post_id).first()
         save_obj.save()
 
-
-        notification =BroadcastNotification()
-        notification.message = f"{user.first_name} {user.last_name} Saved your post"
-        notification.user=Post.objects.filter(id=post_id).first().user
-        notification.notification_type = 'save'
-        notification.notification_id = post_id
-        notification.save()
+        if Post.objects.filter(id=post_id).first().user != user:
+            notification =BroadcastNotification()
+            notification.message = f"{user.first_name} {user.last_name} Saved your post"
+            notification.user=Post.objects.filter(id=post_id).first().user
+            notification.notification_type = 'save'
+            notification.notification_id = post_id
+            notification.from_user=request.user
+            notification.save()
     except:
         resp={'Response':"Error"}
     return JsonResponse(resp)
@@ -888,13 +944,14 @@ def addcomment(request):
     comment.comment=post_text
     comment.save()
 
-
-    notification =BroadcastNotification()
-    notification.message = f"{current_user.first_name} {current_user.last_name} Commented on your post"
-    notification.user=Post.objects.filter(id=post_id).first().user
-    notification.notification_type = 'comment'
-    notification.notification_id = post_id
-    notification.save()
+    if Post.objects.filter(id=post_id).first().user != user:
+        notification =BroadcastNotification()
+        notification.message = f"{current_user.first_name} {current_user.last_name} Commented on your post"
+        notification.user=Post.objects.filter(id=post_id).first().user
+        notification.notification_type = 'comment'
+        notification.notification_id = post_id
+        notification.from_user=current_user
+        notification.save()
 
     
 
@@ -960,10 +1017,11 @@ def savechat(request):
     person = friendship.sender if friendship.receiver == current_user else friendship.receiver
 
     notification =BroadcastNotification()
-    notification.message = f"{current_user.first_name} {current_user.last_name} Commented on your post"
+    notification.message = f"{current_user.first_name} {current_user.last_name} sent you a message"
     notification.user=person
     notification.notification_type = 'message'
     notification.notification_id = roomname
+    notification.from_user=current_user
     notification.save()
 
 
@@ -988,11 +1046,48 @@ def postdetails(request,postid):
         "post_details":post_obj_final,
         "current_user":user,
         "userid":request.user.id,
-        "notification_count":notification_count
+        "notification_count":notification_count,
+        "post_count":1,
     }
     return render(request,"core/postdetails.html",context)
 
 
+
+
+def get_notifications(request):
+    current_user=request.user
+    request_body= QueryDict(request.body)
+    notifications = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False))
+
+  
+    final_data=[]
+    for notif in notifications:
+        data={}
+        data['message'] = notif.message
+        data['date']=notif.created_date
+        try:
+            data['user_image']=notif.from_user.userprofile.profile_picture
+        except:
+            data['user_image'] =''
+        data['type']=notif.notification_type
+        data['id']=notif.notification_id
+        data['notification_id']=notif.id
+        final_data.append(data)
+    resp={"data":final_data}
+    return JsonResponse(resp)
+
+
+def update_notifications_seen(request):
+    current_user=request.user
+    request_body= QueryDict(request.body)
+    json_data = json.loads(list(request_body.keys())[0]) 
+    id=json_data.get('id')
+    notification = BroadcastNotification.objects.filter(id=int(id)).first()
+    notification.seen =True
+    notification.save()
+
+    resp={"data":'success'}
+    return JsonResponse(resp)
 
 
 

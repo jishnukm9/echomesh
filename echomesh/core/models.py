@@ -207,6 +207,7 @@ class BroadcastNotification(models.Model):
     notification_type = models.CharField(max_length=50,null=True,default=None)
     notification_id =models.CharField(max_length=50,null=True,default=None)
     seen = models.BooleanField(default=False)
+    from_user=models.ForeignKey(User,on_delete=models.CASCADE,related_name='notifications',default=None,null=True,blank=True)
 
     def __str__(self):
         return self.notification_type

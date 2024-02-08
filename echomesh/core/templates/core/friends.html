@@ -56,12 +56,21 @@
           </li> -->
           <li class="nav-item notif-nav-item">
             <a
-              href="#about"
-              class="nav-link-custom active p-3 rounded-circle d-flex align-items-center justify-content-center"
+              class="nav-link-custom notif-btn active p-3 rounded-circle d-flex align-items-center justify-content-center"
             >
               <i class="fa-solid fa-bell"></i>
             </a>
             <div class="notif-count">{{notification_count}}</div>
+
+            <ul class="dropdown-container-notification rounded shadow hide">
+              <div
+                class="notif-container-header px-3 d-flex justify-content-between align-items-center"
+              >
+                <h4 class="m-0">Notifications</h4>
+                <i class="fa-solid fa-ellipsis"></i>
+              </div>
+              <ul class="notification-insert px-3"></ul>
+            </ul>
           </li>
           <li class="nav-item dropdown-profile">
             <a href="" class="profile-btn">
@@ -254,7 +263,7 @@
           class="post-upload-header d-flex justify-content-between align-items-center"
         >
           <div></div>
-          <div><h4>Upload</h4></div>
+          <div><h4>Edit</h4></div>
           <div>
             <i class="fa-solid fa-xmark fs-4 close-post-upload-edit"></i>
           </div>
@@ -262,7 +271,7 @@
         <div><hr /></div>
 
         <form
-          action="{% url 'editprofile' page='profile' %}"
+          action="{% url 'editprofile' page='about' %}"
           method="post"
           enctype="multipart/form-data"
         >
@@ -288,9 +297,75 @@
               accept="image/*"
             />
           </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">High School</p>
+            <input type="text" name="highschool" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">High School Passed Year</p>
+            <input
+              type="number"
+              name="highschoolpassed"
+              min="1900"
+              class="form-control"
+            />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">College</p>
+            <input type="text" name="college" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">College Passed Year</p>
+            <input
+              type="number"
+              name="collagepassed"
+              min="1900"
+              class="form-control"
+            />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">City</p>
+            <input type="text" name="city" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">District</p>
+            <input type="text" name="district" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">State</p>
+            <input type="text" name="state" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">Country</p>
+            <input type="text" name="country" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">Phone</p>
+            <input type="number" min="1900" name="phone" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">Relationship Status</p>
+            <select name="relationship" id="" class="form-control">
+              <option value=""></option>
+              <option value="Single">Single</option>
+              <option value="In a relationship">In a relationship</option>
+              <option value="Married">Married</option>
+              <option value="Divorced">Divorced</option>
+              <option value="Engaged">Engaged</option>
+            </select>
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">Gender</p>
+            <select name="gender" id="" class="form-control">
+              <option value=""></option>
+              <option value="Male">Male</option>
+
+              <option value="Female">Female</option>
+            </select>
+          </div>
 
           <div class="mt-4 w-100">
-            <button class="btn btn-success w-100">Upload</button>
+            <button class="btn btn-success w-100">Update</button>
           </div>
         </form>
       </div>

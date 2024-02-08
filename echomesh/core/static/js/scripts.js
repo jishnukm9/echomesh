@@ -44,6 +44,18 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+// Notification dropdown
+document.addEventListener("DOMContentLoaded", function () {
+  const profileBtn = document.querySelector(".notif-btn");
+  const dropdownContainer = document.querySelector(
+    ".dropdown-container-notification"
+  );
+  profileBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+    dropdownContainer.classList.toggle("hide");
+  });
+});
+
 // body transparent when sign up form open
 document.addEventListener("DOMContentLoaded", function () {
   const createAccountBtn = document.querySelector(".create-account-btn");
@@ -443,7 +455,7 @@ document.addEventListener("DOMContentLoaded", function () {
     bodyWrapper.style.display = "block";
     bodyWrapper.style.zIndex = "10000";
 
-    postUploadContainer.style.top = scrollY + 260 + "px";
+    postUploadContainer.style.top = scrollY + 700 + "px";
 
     // disableScroll();
   });
@@ -943,3 +955,115 @@ document.addEventListener("DOMContentLoaded", function () {
 //     }
 //   };
 // });
+
+// get notifications
+
+document.addEventListener("DOMContentLoaded", function () {
+  const profileBtn = document.querySelector(".notif-btn");
+  const dropdownContainer = document.querySelector(".notification-insert");
+  profileBtn.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    const requestData = {};
+    const csrftoken = csrf_token;
+
+    fetch("/get-notifications/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRFToken": csrftoken,
+      },
+      body: JSON.stringify(requestData),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Success:", data);
+        data = data.data;
+        dropdownContainer.innerHTML = "";
+        notifications = "";
+        data.forEach((elem) => {
+          let link;
+          if (
+            (elem.type == "like") |
+            (elem.type == "comment") |
+            (elem.type == "save")
+          ) {
+            link = `/postdetails/${elem.id}/`;
+          } else if (elem.type == "message") {
+            link = `/chatroom/${elem.id}/`;
+            1;
+          } else if (elem.type == "friendrequest") {
+            link = "/friendrequest/";
+          } else if (elem.type == "acceptrequest") {
+            link = `/profile/${elem.id}/`;
+          } else {
+            link = "#";
+          }
+          console.log(link, "link");
+          let li = `
+          <li class="p-2 notification-li" data-id="${elem.notification_id}">
+          <a href=${link} class='d-flex gap-2 notification-li' data-id="${elem.notification_id}">
+
+          <img class="notification-prof-pic" src="${elem.user_image}" >
+          ${elem.message}
+          </a>
+          </li>`;
+          dropdownContainer.insertAdjacentHTML("afterbegin", li);
+        });
+        console.log(notifications);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  let insertNotifBtn = document.querySelector(".notification-insert");
+
+  insertNotifBtn.addEventListener("click", function (event) {
+    if (event.target.classList.contains("notification-li")) {
+      event.preventDefault();
+
+      let notificationId = event.target.dataset.id;
+
+      console.log("notif id", notificationId);
+
+      var csrftoken = csrf_token;
+
+      const requestData = { id: notificationId };
+
+      fetch("/update_notifications_seen/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRFToken": csrftoken,
+        },
+        body: JSON.stringify(requestData),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("Network response was not ok");
+          }
+
+          return response.json();
+        })
+        .then((data) => {
+          console.log("Success:", data);
+        })
+        .catch((error) => {
+          console.error("Error:", error);
+        });
+
+      let href = event.target.href;
+
+      window.location.href = href;
+    }
+  });
+});

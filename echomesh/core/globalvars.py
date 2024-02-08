@@ -1,12 +1,17 @@
 
 
 from datetime import datetime 
+import os
+from dotenv import load_dotenv
+
+# Load the environment variables
+load_dotenv()
 
 def custom_variables(request):
     # Define your custom variables here
     app_version= "Version 24.01"
-    publitio_key='Nvrtdz6pqMtg1uQk2quz'
-    publitio_secret='8thJGkhdPuAyygsWkt0ywrA1butZz2t5'
+    publitio_key=os.getenv('PUBLITIO_KEY', '')
+    publitio_secret= os.getenv('PUBLITIO_SECRET', '')
     
 
     return {
