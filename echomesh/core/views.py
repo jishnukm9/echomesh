@@ -944,7 +944,7 @@ def addcomment(request):
     comment.comment=post_text
     comment.save()
 
-    if Post.objects.filter(id=post_id).first().user != user:
+    if Post.objects.filter(id=post_id).first().user != current_user:
         notification =BroadcastNotification()
         notification.message = f"{current_user.first_name} {current_user.last_name} Commented on your post"
         notification.user=Post.objects.filter(id=post_id).first().user
