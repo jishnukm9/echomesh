@@ -116,7 +116,7 @@
 
     <div class="chat-container">
       <div
-        class="chat-box p-2 d-flex justify-content-between align-items-center bg-white"
+      class="chat-box py-2 px-3 d-flex justify-content-between align-items-center bg-white"
       >
         <div class="contacts-online-container d-flex align-items-center gap-3">
           <img
@@ -137,7 +137,7 @@
           <i class="fa-solid fa-ellipsis fs-4"></i>
         </div>
       </div>
-      <div class="chat-box-body p-2 bg-white">
+      <div class="chat-box-body  py-2 px-3  bg-white">
         <div class="chat-box-body-inside border">
           <ul class="messages-chats p-3">
             {% for chats in all_chats %} {% if chats.userid == user.id %}
@@ -169,7 +169,7 @@
         </div>
       </div>
       <div
-        class="chat-box-footer bg-white px-1 py-1 d-flex align-items-center gap-1 border"
+      class="chat-box-footer bg-white px-1 py-1 d-flex align-items-center gap-1 border"
       >
         <textarea
           class="form-control message-type"

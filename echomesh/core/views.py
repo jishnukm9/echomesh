@@ -11,7 +11,7 @@ from django.contrib import messages
 from functools import partial
 import json
 from django.db.models import Q
-from.utils import publitio_image_upload,publitio_video_upload
+from .utils import publitio_image_upload,publitio_video_upload
 from itertools import chain
 from django.urls import reverse
 from datetime import datetime
@@ -586,7 +586,7 @@ def unfriend(request,id):
         for item in req_obj:
             item.delete()
 
-    return redirect('friends')
+    return redirect(reverse('friends',kwargs={"id":request.user.id}))
 
 
 
