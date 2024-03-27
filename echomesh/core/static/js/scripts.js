@@ -701,7 +701,7 @@ const getPost = function (postId) {
         }
 
         htmlContent = `
-        <div class="rounded bg-white p-0">
+        <div class="rounded bg-white p-0 w-100 h-100">
               <div
                 class="d-flex justify-content-between align-items-center mb-3"
               >
