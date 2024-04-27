@@ -1057,7 +1057,8 @@ def postdetails(request,postid):
 def get_notifications(request):
     current_user=request.user
     request_body= QueryDict(request.body)
-    notifications = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False))
+    # notifications = BroadcastNotification.objects.filter(Q(user=request.user)&Q(seen=False))
+    notifications = BroadcastNotification.objects.filter(user=request.user)
 
   
     final_data=[]
@@ -1072,6 +1073,7 @@ def get_notifications(request):
         data['type']=notif.notification_type
         data['id']=notif.notification_id
         data['notification_id']=notif.id
+        data['seen'] = notif.seen
         final_data.append(data)
     resp={"data":final_data}
     return JsonResponse(resp)

@@ -1007,7 +1007,7 @@ document.addEventListener("DOMContentLoaded", function () {
           }
           console.log(link, "link");
           let li = `
-          <li class="p-2 notification-li" data-id="${elem.notification_id}">
+          <li class="p-2  notification-li   " data-id="${elem.notification_id}"   >
           <a href=${link} class='d-flex gap-2 notification-li' data-id="${elem.notification_id}">
 
           <img class="notification-prof-pic" src="${elem.user_image}" >
