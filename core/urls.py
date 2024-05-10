@@ -1,6 +1,10 @@
 
 from django.urls import path
 from core import views
+from django.conf import settings
+from django.conf.urls.static import static
+
+
 
 urlpatterns = [
     path('login/',views.login,name='login'),
@@ -31,3 +35,6 @@ urlpatterns = [
      path('get-notifications/',views.get_notifications,name='getnotifications'),
      path('update_notifications_seen/',views.update_notifications_seen,name='update_notifications_seen'),
 ]
+
+
+urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
