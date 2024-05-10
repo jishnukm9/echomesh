@@ -791,6 +791,25 @@ html {
   right: -7px;
 }
 
+
+.upload-wrapper{
+  
+    padding-top: 1rem !important;
+    padding-right: 3rem !important;
+    padding-left: 3rem !important;
+
+}
+
+.upload-div{
+    padding-top: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+    padding-right: 1.5rem !important;
+    padding-left: 1.5rem !important;
+
+}
+
+
+
 /* Extra small devices (phones) */
 @media only screen and (max-width: 576px) {
   /* Your styles for xs devices go here */
@@ -838,7 +857,28 @@ html {
   .post-upload-container-edit-profile {
     width: 90%;
   }
+
+
+
+  .upload-wrapper{
+  
+    padding-top: 1rem !important;
+    padding-right: 0 !important;
+    padding-left: 0 !important;
+
 }
+
+.upload-div{
+    padding-top: 0.1rem !important;
+    padding-bottom: 0.1rem !important;
+    padding-right: 0.5rem !important;
+    padding-left: 0.5rem !important;
+
+}
+
+
+
+} 
 /* Small devices (tablets) */
 @media only screen and (min-width: 576px) and (max-width: 767px) {
   /* Your styles for sm devices go here */
