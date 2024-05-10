@@ -12,6 +12,10 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 from pathlib import Path
 import os
+from dotenv import load_dotenv
+
+# Load the environment variables
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +25,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-mzej09z*idhi2^k2$wxrvd7zqsfw61%48c&h3mw*u!-2-&us6%'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -120,9 +124,14 @@ DATABASES = {
     }
 }
 
-# import dj_database_url
-# db_from_env = dj_database_url.config(conn_max_age=600)
-# DATABASES['default'].update(db_from_env)
+
+# postgres://echomesh_db_user:b9a66xVymGMzMxnMgJbHUCgniG5YRd7p@dpg-couso70l6cac73baea10-a.oregon-postgres.render.com/echomesh_db
+
+import dj_database_url
+
+database_url = os.getenv('DATABASE_URL')
+
+DATABASES['default'] = dj_database_url.parse(database_url)
 
 
 # Password validation
