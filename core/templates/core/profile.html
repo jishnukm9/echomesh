@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EchoMesh</title>
+    <link
+      rel="shortcut icon"
+      href="{% static 'images/favicon.ico' %}"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="{% static 'css/plyr.css' %}" />
+
+    <link rel="stylesheet" href="{% static 'css/fontawesome.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  </head>
+  <body>
+    <!-- navbar -->
+
+    <!-- <nav class="navbar navbar-expand-md bg-white fixed-top nav-shadow"> -->
+    <div
+      class="d-flex bg-white fixed-top nav-shadow justify-content-between align-items-center px-3 py-0"
+    >
+      <a href="{% url 'home' %}" class="navbar-brand fs-3 fw-bold"
+        ><span class="logo-first-letter">E</span>choMesh<span
+          class="logo-first-letter"
+          >.</span
+        ></a
+      >
+
+      <div class="tabs-container">
+        <div
+          class="tabs d-flex justify-content-between align-items-center gap-5 fs-4"
+        >
+          <a href="{% url 'home' %}"><i class="fa-solid fa-house-user"></i> </a>
+          <a href="{% url 'friends' id=current_user.id %}"
+            ><i class="fa-solid fa-users"></i
+          ></a>
+          <a href="{% url 'profile' id=user.id %}" class="tab-active"
+            ><i class="fa-solid fa-user"></i
+          ></a>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-end align-items-center">
+        <ul
+          class="navbar-menu d-flex justify-content-between align-items-center gap-3 mt-3"
+        >
+          <!-- <li class="nav-item">
+            <a
+              href="#"
+              class="nav-link-custom active p-3 rounded-circle d-flex align-items-center justify-content-center"
+            >
+              <i class="fa-solid fa-message"></i>
+            </a>
+          </li> -->
+          <li class="nav-item notif-nav-item">
+            <a
+              class="nav-link-custom notif-btn active p-3 rounded-circle d-flex align-items-center justify-content-center"
+            >
+              <i class="fa-solid fa-bell"></i>
+            </a>
+            <div class="notif-count">{{notification_count}}</div>
+
+            <ul class="dropdown-container-notification rounded shadow hide">
+              <div
+                class="notif-container-header px-3 d-flex justify-content-between align-items-center"
+              >
+                <h4 class="m-0">Notifications</h4>
+                <i class="fa-solid fa-ellipsis"></i>
+              </div>
+              <ul class="notification-insert px-3"></ul>
+            </ul>
+          </li>
+          <li class="nav-item dropdown-profile">
+            <a href="" class="profile-btn">
+              <img
+                class="nav-link-custom border profile-pic-round rounded-circle d-flex align-items-center justify-content-center"
+                src="{{current_user.userprofile.profile_picture}}"
+                alt="profie image"
+            /></a>
+            <ul class="dropdown-container rounded shadow hide-logout">
+              <li>
+                <a
+                  href="{% url 'profile' id=current_user.id %}"
+                  class="dropdown-item d-flex justify-content-between align-items-center"
+                >
+                  <div>
+                    <i class="fa-solid fa-user logout-icon"></i
+                    ><span class="ps-2">Profile</span>
+                  </div>
+                  <!-- <div>></div> -->
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/logout/"
+                  class="dropdown-item d-flex justify-content-between align-items-center"
+                >
+                  <div>
+                    <i class="fa-solid fa-right-from-bracket logout-icon"></i
+                    ><span class="ps-2">Logout</span>
+                  </div>
+                  <!-- <div>></div> -->
+                </a>
+              </li>
+              <!-- <li><a href="#" class="dropdown-item">Item 2</a></li>
+                <li><a href="#" class="dropdown-item">Item 3</a></li> -->
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="profile-container bg-white">
+      <div class="cover-pic-container-box">
+        <div
+          class="cover-pic-container"
+          style="
+            background-image: url({{user.userprofile.cover_picture}});
+            background-size: cover;
+          "
+        ></div>
+      </div>
+
+      <div
+        class="profile-description-container d-flex justify-content-between align-items-center mt-2"
+      >
+        <div class="profile-pic-box w-100">
+          <div class="row">
+            <div class="col-lg-2">
+              <div class="profile-pic-contain">
+                <img
+                  class="profile-page-pic"
+                  src="{{user.userprofile.profile_picture}}"
+                  alt="profile-pic"
+                />
+              </div>
+            </div>
+            <div class="col-lg-6">
+              <div class="name-friends ps-3">
+                <div class="prof-name">
+                  <h2 class="p-0 m-0">
+                    {{user.first_name}} {{user.last_name}}
+                  </h2>
+                </div>
+                <div class="friends-count">{{friends_count}} friends</div>
+              </div>
+            </div>
+            <div class="col-lg-4 edit-profile-container">
+              <div class="edit-profile">
+                {% if is_current_user %}
+                <button class="btn btn-secondary edit-profile-btn">
+                  Edit Profile
+                </button>
+                {% else %} {% if request_status == 'Pending' %}
+                <button class="btn btn-warning">Pending</button>
+                {% elif request_status == 'Friends' %} {% else %}
+                <a
+                  href="{% url 'addfriend' receiver=user.id  %}"
+                  class="btn btn-success"
+                  >Add Friend</a
+                >
+                {% endif %} {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="profile-devider">
+        <hr />
+      </div>
+      <div class="profile-tabs">
+        <ul class="nav nav-pills">
+          <li class="nav-item">
+            <a
+              class="nav-link active-tab text-blue"
+              aria-current="page"
+              href="#"
+              >Posts</a
+            >
+          </li>
+          <li class="nav-item not-active-item">
+            <a class="nav-link text-dark" href="{% url 'about' id=user.id %}"
+              >About</a
+            >
+          </li>
+          <li class="nav-item not-active-item">
+            <a class="nav-link text-dark" href="{% url 'friends' id=user.id %}"
+              >Friends</a
+            >
+          </li>
+          {% if is_current_user %}
+          <li class="nav-item not-active-item">
+            <a
+              href="{% url 'friendrequest' %}"
+              class="nav-link text-dark"
+              href="#"
+              >Friend Requests</a
+            >
+          </li>
+          {% endif %}
+          <li class="nav-item not-active-item">
+            <a class="nav-link text-dark" href="{% url 'photos' id=user.id %}"
+              >Photos</a
+            >
+          </li>
+          <li class="nav-item not-active-item">
+            <a class="nav-link text-dark" href="{% url 'videos' id=user.id %}"
+              >Videos</a
+            >
+          </li>
+          <li class="nav-item not-active-item">
+            <a
+              class="nav-link text-dark"
+              href="{% url 'savedposts' id=user.id %}"
+              >Saved</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="posts-container mt-3">
+      {% if is_current_user %}
+      <div class="middle-content mb-3">
+        <div class="mid-content-child rounded bg-white p-3">
+          <div class="hstack gap-2 pb-3 border-bottom">
+            <img
+              class="nav-link-custom border profile-pic-round prof-pic rounded-circle d-flex align-items-center justify-content-center"
+              src="{{user.userprofile.profile_picture}}"
+              alt="profie image"
+            />
+
+            <input
+              type="text"
+              class="form-control whats-on"
+              placeholder="What's on your mind {{user.first_name}}?"
+              autocomplete="off"
+              id="whats-on-mind"
+              data-page="profile"
+            />
+          </div>
+
+          <div class="px-5 pt-3">
+            <div
+              class="upload-btn d-flex justify-content-between align-items-center"
+            >
+              <div
+                data-page="profile"
+                id="video-upload-pop"
+                class="video-up video-upload-pop video-upload-pop-profile d-flex align-items-center gap-2 px-4 py-2 rounded"
+              >
+                <i class="fa-solid fa-video text-danger"></i>
+                <p class="align-items-center m-0">Video</p>
+              </div>
+              <div
+                id="image-upload-pop"
+                data-page="profile"
+                class="img-up image-upload-pop image-upload-pop-profile d-flex align-items-center gap-2 px-4 py-2 rounded"
+              >
+                <i class="fa-solid fa-image text-success"></i>
+                <p class="align-items-center m-0">Image</p>
+              </div>
+              <div
+                id="feeling-upload-pop"
+                data-page="profile"
+                class="feeling-up feeling-upload-pop feeling-upload-pop-profile d-flex align-items-center gap-2 px-4 py-2 rounded"
+              >
+                <i class="fa-regular fa-face-smile text-warning"></i>
+                <p class="align-items-center m-0">Feelings</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %} {% for post in posts %}
+
+      <div class="middle-content-two mb-2">
+        <div class="middle-content-two-child rounded bg-white p-3">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex gap-2">
+              <div>
+                <img
+                  class="nav-link-custom border profile-pic-round prof-pic rounded-circle d-flex align-items-center justify-content-center"
+                  src="{{post.user.userprofile.profile_picture}}"
+                  alt="profie image"
+                />
+              </div>
+              <div class="d-flex align-items-center justify-content-center">
+                <div>
+                  <p class="m-0">
+                    {{post.user.first_name}} {{post.user.last_name}}
+                  </p>
+                  <p class="m-0 time">{{post.post.created_at}}</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex gap-3">
+              <div>
+                <i class="fa-solid fa-ellipsis fs-4 post-three-dot"></i>
+              </div>
+
+              <div>
+                <i class="fa-solid fa-xmark fs-4 post-close-btn"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="post-description">
+            <p class="post-description-font">{{post.post.text}}</p>
+          </div>
+
+          {% if post.post.post_type == 'Image' %}
+
+          <div class="post-image-container">
+            <img class="post-image" src="{{post.post.image}}" alt="" />
+          </div>
+
+          {% elif post.post.post_type == 'Video' %}
+
+          <div class="post-video-container">
+            <video
+              id="player{{forloop.counter}}"
+              playsinline
+              controls
+              data-poster="/path/to/poster.jpg"
+            >
+              <source src="{{post.post.video}}" type="video/mp4" />
+
+              <!-- Captions are optional -->
+              <track
+                kind="captions"
+                label="English captions"
+                src="/path/to/captions.vtt"
+                srclang="en"
+                default
+              />
+            </video>
+          </div>
+          {% endif %}
+
+          <div class="px-2 pt-3">
+            <div
+              class="like-comment-container d-flex justify-content-between align-items-center"
+            >
+              <div
+                class="like-count d-flex align-items-center gap-2 px-0 py-2 rounded"
+              >
+                <i class="fa-solid fa-thumbs-up text-blue"></i>
+                <p class="align-items-center likes-count m-0">
+                  <span class="like-count-integer">{{post.like_count}}</span>
+                  Likes
+                </p>
+              </div>
+
+              <div
+                class="comment-count d-flex align-items-center gap-2 px-0 py-2 rounded"
+              >
+                <i class="fa-solid fa-comment"></i>
+                <p class="align-items-center m-0">
+                  {{post.comment_count}} Comments
+                </p>
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div class="px-5 pt-0">
+            <div
+              class="upload-btn d-flex justify-content-between align-items-center"
+            >
+              {% if post.current_user_liked == True %}
+              <a
+                data-post-id="{{post.post.id}}"
+                data-user-id="{{user.id}}"
+                class="video-up post-like-btn post-liked fw-bold text-decoration-none text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+              >
+                <i class="fa-regular fa-thumbs-up"></i>
+                <p class="align-items-center m-0">Like</p>
+              </a>
+              {% else %}
+              <a
+                data-post-id="{{post.post.id}}"
+                data-user-id="{{user.id}}"
+                class="video-up post-like-btn not-liked fw-bold text-decoration-none text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+              >
+                <i class="fa-regular fa-thumbs-up"></i>
+                <p class="align-items-center m-0">Like</p>
+              </a>
+              {% endif %}
+
+              <a
+                data-post-id="{{post.post.id}}"
+                data-user-id="{{user.id}}"
+                data-page="profile"
+                class="img-up post-comment-btn post-comment-btn-profile text-decoration-none fw-bold text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+              >
+                <i class="fa-regular fa-comment"></i>
+                <p class="align-items-center m-0">Comment</p>
+              </a>
+
+              {% if post.current_user_saved == True %}
+              <a
+                data-post-id="{{post.post.id}}"
+                data-user-id="{{user.id}}"
+                class="video-up save-post-btn post-saved fw-bold text-decoration-none text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+              >
+                <i class="fa-solid fa-bookmark"></i>
+                <p class="align-items-center m-0">Save</p>
+              </a>
+              {% else %}
+              <a
+                data-post-id="{{post.post.id}}"
+                data-user-id="{{user.id}}"
+                class="feeling-up save-post-btn not-saved text-decoration-none fw-bold text-secondary d-flex align-items-center gap-2 px-2 py-2 rounded"
+              >
+                <i class="fa-solid fa-bookmark"></i>
+                <p class="align-items-center m-0">Save</p>
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- <div class="footer mt-5"></div> -->
+
+      {% endfor %}
+    </div>
+
+    <!-- </div> -->
+    <div class="body-wrapper-two">
+      <div
+        class="post-upload-container body-wrapper-two-profile-page bg-white p-3 rounded shadow"
+      >
+        <div
+          class="post-upload-header d-flex justify-content-between align-items-center"
+        >
+          <div></div>
+          <div><h4>Create Post</h4></div>
+          <div>
+            <i class="fa-solid fa-xmark fs-4 close-post-upload"></i>
+          </div>
+        </div>
+        <div><hr /></div>
+        <div>
+          <div
+            class="d-flex align-items-center gap-2 py-2 px-2 text-decoration-none text-dark"
+          >
+            <img
+              class="nav-link-custom border profile-pic-round prof-pic-left rounded-circle d-flex align-items-center justify-content-center"
+              src="{{user.userprofile.profile_picture}}"
+              alt="profie image"
+            /><span>{{user.first_name}} {{user.last_name}}</span>
+          </div>
+        </div>
+        <form
+          action="{% url 'uploadpost' page='profile' %}"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          {% csrf_token %}
+          <div class="upload-form-continer">
+            <textarea
+              name="text"
+              id=""
+              cols="30"
+              rows="10"
+              placeholder="What's on your mind {{user.first_name}}?"
+              class="form-control border ps-4"
+            ></textarea>
+          </div>
+
+          <div class="mt-2 file-upload-inp-image">
+            <input
+              type="file"
+              class="form-control"
+              name="image"
+              id="imageInput"
+              accept="image/*"
+            />
+            <input type="text" name="posttype" value="Image" hidden />
+          </div>
+          <div class="mt-2 file-upload-inp-video">
+            <input
+              type="file"
+              class="form-control"
+              name="video"
+              id="videoInput"
+              accept="video/*"
+            />
+            <input type="text" name="posttype" value="video" hidden />
+          </div>
+
+          <div
+            class="d-flex justify-content-between align-items-center border rounded px-3 py-3 mt-2"
+          >
+            <div><p class="m-0 p-0">Add to your post</p></div>
+            <div
+              class="d-flex align-items-center justify-content-between gap-4"
+            >
+              <div class="upload-icon upload-icon-image">
+                <i class="fa-solid fa-image text-success"></i>
+              </div>
+              <div class="upload-icon upload-icon-video">
+                <i class="fa-solid fa-video text-success"></i>
+              </div>
+              <div class="upload-icon upload-icon-feeling">
+                <i class="fa-regular fa-face-smile text-warning"></i>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-2 w-100">
+            <button class="btn btn-success w-100">Post</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="body-wrapper-two-edit-profile">
+      <div
+        class="post-upload-container-edit-profile body-wrapper-two-profile-page-edit-profile bg-white p-3 rounded shadow"
+      >
+        <div
+          class="post-upload-header d-flex justify-content-between align-items-center"
+        >
+          <div></div>
+          <div><h4>Edit</h4></div>
+          <div>
+            <i class="fa-solid fa-xmark fs-4 close-post-upload-edit"></i>
+          </div>
+        </div>
+        <div><hr /></div>
+
+        <form
+          action="{% url 'editprofile' page='about' %}"
+          method="post"
+          enctype="multipart/form-data"
+        >
+          {% csrf_token %}
+
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">Profile Picture</p>
+            <input
+              type="file"
+              class="form-control"
+              name="profilepicture"
+              id="imageInput"
+              accept="image/*"
+            />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">Cover Picture</p>
+            <input
+              type="file"
+              class="form-control"
+              name="coverpicture"
+              id="imageInput"
+              accept="image/*"
+            />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">High School</p>
+            <input type="text" name="highschool" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">High School Passed Year</p>
+            <input
+              type="number"
+              name="highschoolpassed"
+              min="1900"
+              class="form-control"
+            />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">College</p>
+            <input type="text" name="college" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">College Passed Year</p>
+            <input
+              type="number"
+              name="collagepassed"
+              min="1900"
+              class="form-control"
+            />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">City</p>
+            <input type="text" name="city" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">District</p>
+            <input type="text" name="district" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">State</p>
+            <input type="text" name="state" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">Country</p>
+            <input type="text" name="country" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">Phone</p>
+            <input type="number" min="1900" name="phone" class="form-control" />
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">Relationship Status</p>
+            <select name="relationship" id="" class="form-control">
+              <option value=""></option>
+              <option value="Single">Single</option>
+              <option value="In a relationship">In a relationship</option>
+              <option value="Married">Married</option>
+              <option value="Divorced">Divorced</option>
+              <option value="Engaged">Engaged</option>
+            </select>
+          </div>
+          <div class="mt-3">
+            <p class="fw-bold text-secondary">Gender</p>
+            <select name="gender" id="" class="form-control">
+              <option value=""></option>
+              <option value="Male">Male</option>
+
+              <option value="Female">Female</option>
+            </select>
+          </div>
+
+          <div class="mt-4 w-100">
+            <button class="btn btn-success w-100">Update</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="body-wrapper-comment">
+      <div class="post-comment-container bg-white p-3 rounded shadow mt-1">
+        <div
+          class="post-upload-header d-flex justify-content-between align-items-center"
+        >
+          <div></div>
+          <div><h4>Comment</h4></div>
+          <div>
+            <i class="fa-solid fa-xmark fs-4 close-post-comment"></i>
+          </div>
+        </div>
+        <div><hr /></div>
+        <div class="post-details-scroll-div" id="post-details-scroll-div">
+          <div
+            class="d-flex post-details-container align-items-center gap-2 py-2 px-2 text-decoration-none text-dark"
+          ></div>
+
+          <div class="comment-section px-2"></div>
+        </div>
+        <div
+          class="post-details-footer d-flex justify-content-between align-items-center px-4 pt-4 pb-2"
+        >
+          <div class="d-flex justify-content-between w-100 gap-2">
+            <div>
+              <img
+                class="nav-link-custom border profile-pic-round-small rounded-circle d-flex align-items-center justify-content-center"
+                src=""
+                alt="profie image"
+              />
+            </div>
+            <input type="text" id="getpostid" value="" hidden />
+            <textarea
+              class="form-control"
+              name=""
+              cols="30"
+              rows="2"
+              placeholder="Reply"
+              id="replytext"
+            ></textarea>
+            <div>
+              <button class="btn btn-success givereply">Reply</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let csrf_token = "{{csrf_token}}";
+    </script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        let roomName = "{{userid}}";
+        const chatSocket = new WebSocket(
+          "ws://" + window.location.host + "/ws/notification/" + roomName + "/"
+        );
+
+        chatSocket.onmessage = function (e) {
+          const data = JSON.parse(e.data);
+          console.log("data-", data);
+          if (data.type === "notification") {
+            const notificationCount = document.querySelector(".notif-count");
+            const count = parseInt(notificationCount.textContent) + 1;
+            console.log(count, "count");
+            document.querySelector(".notif-count").textContent = count;
+          }
+        };
+      });
+    </script>
+
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/plyr.js' %}"></script>
+
+    <script>
+        let count={{post_count}}
+      for (let index = 1; index < parseInt(count)+1; index++) {
+        const player = new Plyr(`#player${index}`);
+      }
+    </script>
+
+    <script src="{% static 'js/scripts.js' %}"></script>
+  </body>
+</html>

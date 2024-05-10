@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load static %}
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EchoMesh</title>
+    <link
+      rel="shortcut icon"
+      href="{% static 'images/favicon.ico' %}"
+      type="image/x-icon"
+    />
+    <link rel="stylesheet" href="{% static 'css/plyr.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/fontawesome.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  </head>
+  <body>
+
+    
+    {% if messages %}
+      <ul class="messages-container" style="position:absolute;top:0;left:44%;">
+        {% for message in messages %}
+          <li class="message-item {% if message.tags == 'success' %}success{% endif %}">{{ message }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    <div
+      class="login-container d-flex justify-content-center align-items-center"
+    >
+      <div class="login-container-child">
+        <div class="login-container-child-1">
+          <h1>
+            <span class="logo-first-letter-login">E</span>choMesh<span
+              class="logo-first-letter-login"
+              >.</span
+            >
+          </h1>
+          <h4 class="login-description">
+            Weaving Together Voices to Create a Symphony of Shared Experiences.
+          </h4>
+        </div>
+        <div class="login-container-child-2">
+          <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+            <div class="login-form rounded bg-white shadow p-5">
+              <input
+                type="email"
+                class="form-control mb-3"
+                placeholder="Email"
+                name="username"
+              />
+              <input
+                type="password"
+                class="form-control mb-3"
+                placeholder="Password"
+                name="password"
+              />
+
+              <button type="submit" class="btn btn-ld btn-primary w-100 mb-3">
+                Login
+              </button>
+            </form>
+              <div class="w-100 text-center mb-3">
+                <a href="" class="text-decoration-none">Forgotten Password?</a>
+              </div>
+              <hr class="" />
+              <div class="w-100 text-center">
+                <a class="btn btn btn-success mt-2 create-account-btn">
+                  Create New Account
+                </a>
+              </div>
+            </div>
+         
+        </div>
+      </div>
+
+      <div class="body-wrapper">
+        <div class="register-container shadow rounded p-3">
+          <div
+            class="registration-form-header d-flex justify-content-between align-items-center"
+          >
+            <div><h2 >Sign Up</h2></div>
+            <div>
+              <i class="fa-solid fa-xmark fs-4 close-registration-form"></i>
+            </div>
+          </div>
+          <div class="mb-3">
+            <p class="m-0 p-0 text-muted">It's quick and easy</p>
+          </div>
+          <div class="mb-4"><hr /></div>
+
+          <form action="{% url 'registeruser' %}" method="post">
+            {% csrf_token %}
+            <div class="row mb-3">
+              <div class="col">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="First name"
+                  name="firstname"
+                />
+              </div>
+              <div class="col">
+                <input
+                  type="text"
+                  class="form-control"
+                  placeholder="Last name"
+                  name="lastname"
+                />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col">
+                <input type="email" class="form-control" placeholder="Email" name="email" />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col">
+                <input
+                  type="password"
+                  class="form-control"
+                  placeholder="Password"
+                  name="password"
+                />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div>
+                <p class="m-0 p-0 text-muted db-text">Date of birth</p>
+              </div>
+              <div class="col">
+                <select name="day" id="daySelect" class="form-control">
+                  <!-- Options will be added dynamically with JavaScript -->
+                </select>
+              </div>
+              <div class="col">
+                <select name="month" id="monthSelect" class="form-control">
+                  <!-- Options will be added dynamically with JavaScript -->
+                </select>
+              </div>
+              <div class="col">
+                <select name="year" id="yearSelect" class="form-control">
+                  <!-- Options will be added dynamically with JavaScript -->
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div>
+                <p class="m-0 p-0 text-muted db-text">Gender</p>
+              </div>
+              <div class="col">
+                <div class="form-check border rounded gender-radio">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="flexRadioDefault1"
+                    
+                    value="Female"
+                  />
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    Female
+                  </label>
+                </div>
+              </div>
+              <div class="col">
+                <div class="form-check border rounded gender-radio">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="gender"
+                    id="flexRadioDefault2"
+                   
+                    value="Male"
+                    checked
+                  />
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    Male
+                  </label>
+                </div>
+              </div>
+            </div>
+            <div class="w-100 text-center">
+              <button type="submit" class="btn btn btn-success mt-2 px-5">Sign Up</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <script src="{% static 'js/plyr.js' %}"></script>
+
+    <script>
+      const player = new Plyr("#player");
+    </script>
+    <script src="{% static 'js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'js/scripts.js' %}"></script>
+  </body>
+</html>
