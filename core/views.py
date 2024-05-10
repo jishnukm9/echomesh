@@ -85,7 +85,7 @@ def registration_view(request):
         user = User.objects.create_user(username=username,password=password,email=email,first_name=firstname,last_name=lastname)
         userprofile= UserProfile()
         userprofile.user=user
-        userprofile.cover_picture='https://images2.imgbox.com/85/6f/d1Jgyuxb_o.jpg'
+        userprofile.cover_picture='https://media.publit.io/file/echocp/coverecho.jpg'
         if gender == 'Male':
             userprofile.profile_picture='https://images2.imgbox.com/de/5b/CUw5uxVc_o.png'
         else:
