@@ -203,10 +203,10 @@ def home(request):
         (Q(sender=user, status='Friends') | Q(receiver=user, status='Friends'))
     ).values_list('receiver', 'sender')))
 
-    posts_obj = sorted(Post.objects.filter(user__in=all_friends), key=lambda x: x.created_at, reverse=True)
+    posts_obj = sorted(Post.objects.filter(Q(user__in=all_friends)|Q(user=user)), key=lambda x: x.created_at, reverse=True)
 
     print("all friends",all_friends)
-
+    print("posts obj",posts_obj)
     online_friends =[]
    
    
@@ -233,6 +233,8 @@ def home(request):
   
     
     post_obj_final = list(map(partial(check_post_activity, current_user=user), posts_obj))
+
+    print("posts final",post_obj_final)
     post_count=len(posts_obj)
     online_friends_sorted_ids = [user['user'].id for user in online_friends_sorted]
     friend_suggestions = User.objects.exclude(pk=user.id).exclude(pk__in=online_friends_sorted_ids)
