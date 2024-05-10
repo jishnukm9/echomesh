@@ -125,7 +125,7 @@ DATABASES = {
 }
 
 
-# postgres://echomesh_db_user:b9a66xVymGMzMxnMgJbHUCgniG5YRd7p@dpg-couso70l6cac73baea10-a.oregon-postgres.render.com/echomesh_db
+
 
 import dj_database_url
 
