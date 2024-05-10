@@ -731,7 +731,7 @@
       document.addEventListener("DOMContentLoaded", function () {
         let roomName = "{{userid}}";
         const chatSocket = new WebSocket(
-          "ws://" + window.location.host + "/ws/notification/" + roomName + "/"
+          "wss://" + window.location.host + "/ws/notification/" + roomName + "/"
         );
 
         chatSocket.onmessage = function (e) {
