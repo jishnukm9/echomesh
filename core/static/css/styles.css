@@ -876,6 +876,20 @@ html {
 
 }
 
+.dropdown-container-notification {
+
+  transition: all 0.5s ease-in;
+  position: absolute;
+  list-style: none;
+  padding: 1rem 0rem;
+  top: 5rem;
+  right: 0.5rem;
+  background-color: #fff;
+  width: 15rem;
+
+  
+ 
+}
 
 
 } 
