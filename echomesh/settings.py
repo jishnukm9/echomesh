@@ -176,15 +176,25 @@ USE_TZ = True
 # STATICFILES_DIRS = [
 #     # os.path.join(BASE_DIR, 'core/static'),
 #     ]
-print("base root",BASE_DIR)
+
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR,'core','static')
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 MEDIA_URL = '/media/'
 
-print("static root",STATIC_ROOT)
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+
+# timeout parameter for 1 hour
+SESSION_COOKIE_AGE = 60*60
+SESSION_EXPIRE_AFTER_LAST_ACTIVITY = True
+
+
+
+CSRF_TRUSTED_ORIGINS = ['https://echomesh.onrender.com' ]
