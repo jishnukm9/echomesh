@@ -196,8 +196,9 @@
       let currentUserId = "{{ userid }}";
       let userImage = "{{ image }}";
       let fullName = "{{ fullname }}";
+      let ws_scheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
       const chatSocket = new WebSocket(
-        "ws://" + window.location.host + "/ws/chat/" + roomName + "/"
+        ws_scheme + "://"+ window.location.host + "/ws/chat/" + roomName + "/"
       );
 
       //   function formatCurrentTime() {

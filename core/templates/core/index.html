@@ -730,7 +730,7 @@
     <script>
       document.addEventListener("DOMContentLoaded", function () {
         let roomName = "{{userid}}";
-        console.log("protocol",window.location.protocol)
+      
         let ws_scheme = window.location.protocol === 'https:' ? 'wss' : 'ws'
         const chatSocket = new WebSocket(
           ws_scheme + "://" + window.location.host + "/ws/notification/" + roomName + "/"
