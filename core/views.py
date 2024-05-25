@@ -203,8 +203,8 @@ def home(request):
         (Q(sender=user, status='Friends') | Q(receiver=user, status='Friends'))
     ).values_list('receiver', 'sender')))
 
-    posts_obj = sorted(Post.objects.filter(Q(user__in=all_friends)|Q(user=user)), key=lambda x: x.created_at, reverse=True)
-
+    # posts_obj = sorted(Post.objects.filter(Q(user__in=all_friends)|Q(user=user)), key=lambda x: x.created_at, reverse=True)
+    posts_obj = sorted(Post.objects.all(), key=lambda x: x.created_at, reverse=True)
 
     online_friends =[]
    
