@@ -19,7 +19,7 @@ This social media app, inspired by Facebook, is designed to offer a comprehensiv
 
 ## Demo
 
-Check out the project in action [here]([https://lnkd.in/g_SGjpDW](https://echomesh.onrender.com/))
+Check out the project in action <a href="https://lnkd.in/g_SGjpDW](https://echomesh.onrender.com/">here</a>
 
 
 <br>
