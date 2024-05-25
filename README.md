@@ -19,10 +19,10 @@ This social media app, inspired by Facebook, is designed to offer a comprehensiv
 
 ## Demo
 
-Check out the project in action [here](https://lnkd.in/g_SGjpDW). Watch the walkthrough video to see how it works and feel free to connect or reach out with your thoughts or questions about the project.
+Check out the project in action [here]([https://lnkd.in/g_SGjpDW](https://echomesh.onrender.com/))..
 
 
-
+<br>
 
 
 ![image](https://github.com/jishnukm9/echomesh/assets/99253054/f10d1391-10ac-463b-a06d-e37c825e49ac)
