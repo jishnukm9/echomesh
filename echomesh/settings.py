@@ -127,11 +127,11 @@ DATABASES = {
 
 
 
-import dj_database_url
+# import dj_database_url
 
-database_url = os.getenv('DATABASE_URL')
+# database_url = os.getenv('DATABASE_URL')
 
-DATABASES['default'] = dj_database_url.parse(database_url)
+# DATABASES['default'] = dj_database_url.parse(database_url)
 
 
 # Password validation
