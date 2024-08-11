@@ -810,6 +810,61 @@ html {
 
 
 
+.divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 15px 0;
+  color: #666;
+}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #ddd;
+}
+.divider span {
+  padding: 0 10px;
+}
+
+
+.create-account-btn{
+  text-decoration: none;
+  display:inline-block;
+  width: 100%;
+  padding: 10px;
+  background-color: #10B981;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+.create-account-btn:hover{
+  background-color: #0ea774;
+}
+
+.demo-btn:hover{
+  background-color: #dd8e0a;
+}
+.demo-btn
+ {
+   text-decoration: none;
+   display:inline-block;
+  width: 100%;
+  padding: 10px;
+  background-color: #F59E0B;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 10px;
+}
+
+
 /* Extra small devices (phones) */
 @media only screen and (max-width: 576px) {
   /* Your styles for xs devices go here */

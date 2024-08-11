@@ -15,6 +15,12 @@ from .utils import publitio_image_upload,publitio_video_upload
 from itertools import chain
 from django.urls import reverse
 from datetime import datetime
+from dotenv import load_dotenv
+import os
+
+# Load the environment variables
+load_dotenv()
+
 
 
 
@@ -35,6 +41,7 @@ def generate_unique_id(modal_name,string_name):
     return unique_id
 
 
+
 def login(request):
     if request.method =='POST':
         username=request.POST['username']
@@ -53,6 +60,27 @@ def login(request):
             return render(request,'core/login.html',context)
     context={}
     return render(request,'core/login.html',context)
+
+
+def demologin(request):
+    username=os.environ.get('DEMO_USERNAME')
+    password=os.environ.get('DEMO_PASSWORD')
+
+    user = authenticate(username=username, password=password)
+
+    if user is not None:
+        auth_login(request,user)
+        user_obj= UserProfile.objects.filter(user=User.objects.filter(id=user.id).first()).first()
+        user_obj.online=True
+        user_obj.save()
+        return redirect('home')
+    else:
+        context={}
+        return render(request,'core/login.html',context)
+    context={}
+    return render(request,'core/login.html',context)
+
+
 
 @login_required
 def logout_view(request):
@@ -241,7 +269,7 @@ def home(request):
     if len(friend_suggestions)!=0:
         if len(friend_suggestions) > 1:
             # If there are more than one users other than the current user, shuffle them and take two entries
-            friend_suggestions = friend_suggestions.order_by('?')[:2]
+            friend_suggestions = friend_suggestions.order_by('?')[:4]
         else:
             friend_suggestions = friend_suggestions
     else:

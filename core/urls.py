@@ -34,6 +34,7 @@ urlpatterns = [
      path('postdetails/<postid>/',views.postdetails,name='postdetails'),
      path('get-notifications/',views.get_notifications,name='getnotifications'),
      path('update_notifications_seen/',views.update_notifications_seen,name='update_notifications_seen'),
+     path('demologin/',views.demologin,name='demologin'),
 ]
 
 

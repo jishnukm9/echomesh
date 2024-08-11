@@ -65,12 +65,17 @@
               <div class="w-100 text-center mb-3">
                 <a href="" class="text-decoration-none">Forgotten Password?</a>
               </div>
-              <hr class="" />
-              <div class="w-100 text-center">
-                <a class="btn btn btn-success mt-2 create-account-btn">
+              <div class="divider"><span>or</span></div>
+              <!-- <div class="w-100 text-center"> -->
+                <a class="text-center create-account-btn">
                   Create New Account
                 </a>
-              </div>
+              <!-- </div> -->
+              <div class="divider"><span>Try without an account</span></div>
+             
+                <a href="{% url 'demologin' %}" class="demo-btn text-center">Demo</a>
+              
+            
             </div>
          
         </div>
@@ -199,3 +204,4 @@
     <script src="{% static 'js/scripts.js' %}"></script>
   </body>
 </html>
+
